@@ -36,8 +36,14 @@ main,.wrap{flex:1;width:100%;max-width:100%;margin:0;padding:2rem 4vw 3.5rem;box
 @keyframes mainFadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .lead{font-size:1.1rem;max-width:65ch}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1rem}
-.course-card{display:block;text-decoration:none;color:inherit;margin:0;border-left:5px solid var(--gold)}
-.course-card:hover{border-color:var(--teal);box-shadow:0 4px 14px rgba(20,33,43,.12)}
+.course-card{display:block;text-decoration:none;color:inherit;margin:0;border-left:5px solid var(--gold);transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.course-card:hover{border-color:var(--teal);box-shadow:0 6px 18px rgba(20,33,43,.12);transform:translateY(-2px)}
+.course-card.is-hidden{display:none!important}
+.toggle-container{display:flex;justify-content:center;align-items:center;margin:2rem 0 1rem}
+.btn-toggle{display:inline-flex;align-items:center;gap:.6rem;padding:.75rem 2rem;font-size:1rem;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--teal) 0%,var(--teal-dark) 100%);border:0;border-radius:999px;cursor:pointer;box-shadow:0 4px 14px rgba(14,107,99,.25);transition:transform .2s ease,box-shadow .2s ease,background .2s ease}
+.btn-toggle:hover{background:linear-gradient(135deg,var(--teal-dark) 0%,#053632 100%);transform:translateY(-2px);box-shadow:0 6px 20px rgba(14,107,99,.35)}
+.btn-toggle:active{transform:translateY(0)}
+.btn-icon{display:inline-block;font-size:1.1rem;font-weight:800;transition:transform .25s ease}
 .course-card h2{margin-top:.4rem}
 .tag{font-size:.85rem;font-weight:600;color:var(--teal)}
 .meta{color:var(--muted);font-size:.92rem;margin:.3rem 0}

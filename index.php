@@ -19,4 +19,10 @@ $pageTitle = 'Courses'; require __DIR__ . '/includes/header.php'; ?>
 </section>
 <p id="count" aria-live="polite"></p>
 <section id="results" class="grid"></section>
+<div class="toggle-container" id="toggleWrap" style="display:none;">
+  <button type="button" id="seeMoreBtn" class="btn btn-toggle" aria-expanded="false">
+    <span id="seeMoreText">See More</span>
+    <span class="btn-icon" id="seeMoreIcon" aria-hidden="true">↓</span>
+  </button>
+</div>
 <?php $extraScripts = '<script src="assets/js/app.js"></script>'; require __DIR__ . '/includes/footer.php'; ?>
