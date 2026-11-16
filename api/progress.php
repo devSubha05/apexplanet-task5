@@ -5,7 +5,6 @@ $me = current_user();
 if (!$me || $_SERVER['REQUEST_METHOD'] !== 'POST') { http_response_code(403); echo json_encode(['error' => 'forbidden']); exit; }
 csrf_check();
 $lesson = (int)($_POST['lesson_id'] ?? 0);
-// the lesson must belong to a course this user is enrolled in
 $s = db()->prepare('SELECT l.course_id FROM lessons l JOIN enrollments e ON e.course_id=l.course_id AND e.user_id=? WHERE l.id=?');
 $s->execute([$me['id'], $lesson]); $cid = $s->fetchColumn();
 if (!$cid) { http_response_code(403); echo json_encode(['error' => 'not enrolled']); exit; }

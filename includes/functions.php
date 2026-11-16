@@ -25,7 +25,6 @@ function db(): PDO {
 function e($v): string { return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); }
 function redirect(string $to): never { header("Location: $to"); exit; }
 
-// ---------- CSRF ----------
 function csrf_token(): string {
     if (empty($_SESSION['csrf'])) $_SESSION['csrf'] = bin2hex(random_bytes(32));
     return $_SESSION['csrf'];
@@ -39,11 +38,9 @@ function csrf_check(): void {
     }
 }
 
-// ---------- Flash messages ----------
 function flash(string $type, string $msg): void { $_SESSION['flash'][] = [$type, $msg]; }
 function flashes(): array { $f = $_SESSION['flash'] ?? []; unset($_SESSION['flash']); return $f; }
 
-// ---------- Auth ----------
 function current_user(): ?array {
     static $user = false;
     if ($user === false) {
@@ -67,8 +64,7 @@ function require_admin(): array {
     if (!$u || $u['role'] !== 'admin') { http_response_code(403); exit('Admins only.'); }
     return $u;
 }
-
-// ---------- Email OTP ----------
+//  Email OTP -
 function issue_otp(int $userId, string $email, string $name): void {
     $code = str_pad((string)random_int(0, 999999), 6, '0', STR_PAD_LEFT);
     db()->prepare('DELETE FROM otp_codes WHERE user_id=?')->execute([$userId]);
@@ -84,7 +80,6 @@ function issue_otp(int $userId, string $email, string $name): void {
     if (DEV_SHOW_OTP) flash('info', "Dev mode: your code is $code" . ($sent ? '' : ' (email was not sent from this machine)'));
 }
 
-// ---------- Misc ----------
 function avatar_url(?array $u): string {
     return ($u && !empty($u['avatar'])) ? UPLOAD_URL . $u['avatar'] : 'assets/img/avatar.svg';
 }

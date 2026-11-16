@@ -1,4 +1,3 @@
--- LearnLoop E-Learning Portal schema + seed data
 CREATE DATABASE IF NOT EXISTS elearn CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE elearn;
 
@@ -71,7 +70,8 @@ CREATE TABLE lesson_progress (
   FOREIGN KEY (lesson_id) REFERENCES lessons(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- Seed: admin login  admin@learnloop.test / password  (CHANGE IT after first login)
+
+-- Seed: admin login  admin@learnloop.test / password
 INSERT INTO users (name,email,password,role,is_verified) VALUES
 ('Admin','admin@learnloop.test','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','admin',1);
 

@@ -1,5 +1,4 @@
 <?php
-// ---- Edit these for your server (InfinityFree gives you the host/user/db name in its panel) ----
 define('DB_HOST', '127.0.0.1');
 define('DB_NAME', 'elearn');
 define('DB_USER', 'root');
@@ -7,7 +6,6 @@ define('DB_PASS', '');
 
 define('SITE_NAME', 'LearnLoop');
 define('MAIL_FROM', 'no-reply@yourdomain.com');
-// true on localhost: shows the OTP on screen because local PHP cannot send mail. SET TO false WHEN DEPLOYED.
 define('DEV_SHOW_OTP', true);
 
 define('OTP_TTL_MINUTES', 10);

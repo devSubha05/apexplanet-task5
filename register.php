@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors[] = 'That email already has an account. Log in instead.';
         } else {
             $hash = password_hash($pass, PASSWORD_DEFAULT);
-            if ($ex) { // unverified leftover: refresh details
+            if ($ex) { 
                 db()->prepare('UPDATE users SET name=?, password=? WHERE id=?')->execute([$name, $hash, $ex['id']]);
                 $uid = (int)$ex['id'];
             } else {
