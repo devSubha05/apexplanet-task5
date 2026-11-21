@@ -4,20 +4,53 @@ require_once __DIR__ . '/../config.php';
 function db(): PDO {
     static $pdo = null;
     if ($pdo === null) {
+        // --- Attempt 1: try connecting normally ---
         try {
             $pdo = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4', DB_USER, DB_PASS, [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES => false,
+                PDO::ATTR_TIMEOUT => 3,
             ]);
-        } catch (PDOException $e) {
-            http_response_code(500);
-            die('<div style="font-family:sans-serif;padding:2rem;max-width:600px;margin:2rem auto;border:1px solid #e2e8f0;border-radius:8px;background:#fff5f5;color:#9b2c2c;">'
-                . '<h2 style="margin-top:0;">Database Connection Error</h2>'
-                . '<p><strong>' . htmlspecialchars($e->getMessage()) . '</strong></p>'
-                . '<p style="color:#4a5568;">Please make sure your MariaDB/MySQL server is running on port 3306 and the <code>' . htmlspecialchars(DB_NAME) . '</code> database has been imported.</p>'
-                . '</div>');
+            return $pdo;
+        } catch (PDOException $firstError) {
+            // Connection failed — MariaDB probably not running. Try auto-start.
         }
+
+        // --- Auto-start MariaDB (non-blocking) ---
+        $mysqld   = '"C:\\Program Files\\MariaDB 13.0\\bin\\mysqld.exe"';
+        $defaults = '"C:\\Program Files\\MariaDB 13.0\\data\\my.ini"';
+        // "start" with a window title spawns a detached process and returns immediately.
+        // Using "start /MIN" keeps the console window minimised.
+        $cmd = 'start "MariaDB" /MIN ' . $mysqld . ' --defaults-file=' . $defaults;
+        exec($cmd);
+
+        // --- Wait for MariaDB to become ready (up to 5 seconds) ---
+        $maxWait = 5;
+        for ($i = 0; $i < $maxWait; $i++) {
+            sleep(1);
+            try {
+                $pdo = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4', DB_USER, DB_PASS, [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    PDO::ATTR_EMULATE_PREPARES => false,
+                    PDO::ATTR_TIMEOUT => 2,
+                ]);
+                return $pdo;  // Connected successfully after auto-start
+            } catch (PDOException $retryError) {
+                // Not ready yet, keep waiting...
+            }
+        }
+
+        // --- All retries failed ---
+        $pdo = null;
+        http_response_code(500);
+        die('<div style="font-family:sans-serif;padding:2rem;max-width:600px;margin:2rem auto;border:1px solid #e2e8f0;border-radius:8px;background:#fff5f5;color:#9b2c2c;">'
+            . '<h2 style="margin-top:0;">Database Connection Error</h2>'
+            . '<p><strong>' . htmlspecialchars($firstError->getMessage()) . '</strong></p>'
+            . '<p style="color:#4a5568;">MariaDB auto-start was attempted but the server did not become ready in time.</p>'
+            . '<p style="color:#4a5568;">Please make sure MariaDB is installed at <code>C:\Program Files\MariaDB 13.0\</code> and try refreshing the page.</p>'
+            . '</div>');
     }
     return $pdo;
 }

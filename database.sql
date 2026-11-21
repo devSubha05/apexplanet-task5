@@ -71,7 +71,7 @@ CREATE TABLE lesson_progress (
 ) ENGINE=InnoDB;
 
 
--- Seed: admin login  admin@learnloop.test / password
+-- Seed: admin login  admin@learnloop.test / Admin@123
 INSERT INTO users (name,email,password,role,is_verified) VALUES
 ('Admin','admin@learnloop.test','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','admin',1);
 
