@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/functions.php';
-if (current_user()) redirect('dashboard.php');
+$redirectTo = $_GET['redirect'] ?? ($_POST['redirect'] ?? '');
+if (current_user()) redirect($redirectTo && !str_contains($redirectTo, '://') ? $redirectTo : 'dashboard.php');
 $email = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
@@ -18,6 +19,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 redirect('verify_otp.php');
             }
             login_user((int)$u['id']);
+            if ($redirectTo && !str_contains($redirectTo, '://') && !str_starts_with($redirectTo, '//')) {
+                redirect($redirectTo);
+            }
             redirect($u['role'] === 'admin' ? 'admin/index.php' : 'dashboard.php');
         }
         $_SESSION['login_fails'] = ++$fails;
@@ -30,6 +34,7 @@ $pageTitle = 'Log in'; require __DIR__ . '/includes/header.php'; ?>
   <h1>Log in</h1>
   <form method="post">
     <?= csrf_field() ?>
+    <?php if ($redirectTo): ?><input type="hidden" name="redirect" value="<?= e($redirectTo) ?>"><?php endif; ?>
     <label>Email <input type="email" name="email" value="<?= e($email) ?>" required autocomplete="email"></label>
     <label>Password <input type="password" name="password" required autocomplete="current-password"></label>
     <button class="btn" type="submit">Log in</button>

@@ -77,14 +77,74 @@
       return;
     }
     rows.forEach(c => {
-      const a = el('a', 'card course-card');
-      a.href = 'course.php?id=' + encodeURIComponent(c.id);
-      a.append(el('span', 'tag', c.category + ' · ' + c.level),
-               el('h2', '', c.title),
-               el('p', '', c.description),
-               el('p', 'meta', c.lessons + ' lessons · ' + c.duration_hours + ' h · ' + c.learners + ' enrolled'));
-      out.append(a);
-      allCards.push(a);
+      const card = el('div', 'card course-card udemy-style-card');
+      const courseUrl = 'course.php?id=' + encodeURIComponent(c.id);
+      const checkoutUrl = 'checkout.php?course_id=' + encodeURIComponent(c.id);
+      const imgPath = c.image || ('assets/img/courses/course-' + c.id + '.jpg');
+
+      // 1. Thumbnail top banner
+      const thumb = el('div', 'udemy-thumb-wrap');
+      const img = document.createElement('img');
+      img.src = imgPath;
+      img.alt = c.title;
+      img.className = 'udemy-thumb-img';
+      img.loading = 'lazy';
+      img.onerror = function() { this.src = 'assets/img/courses/course-1.jpg'; };
+
+      const premiumBadge = el('span', 'udemy-badge-premium', '👑 Premium');
+      const wishBtn = el('button', 'udemy-wishlist-btn', '♡');
+      wishBtn.type = 'button';
+      wishBtn.title = 'Add to wishlist';
+      wishBtn.setAttribute('aria-label', 'Wishlist');
+      wishBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        wishBtn.classList.toggle('active');
+        wishBtn.textContent = wishBtn.classList.contains('active') ? '♥' : '♡';
+      });
+
+      thumb.append(img, premiumBadge, wishBtn);
+
+      // Clicking thumb navigates to course
+      thumb.addEventListener('click', () => { window.location.href = courseUrl; });
+
+      // 2. Card Content Body
+      const body = el('div', 'udemy-card-body');
+
+      const titleLink = el('a', 'udemy-title-link');
+      titleLink.href = courseUrl;
+      const title = el('h3', 'udemy-card-title', c.title);
+      titleLink.append(title);
+
+      const instructor = el('p', 'udemy-card-instructor', (c.instructor && c.instructor !== 'Admin' ? c.instructor : (c.category + ' Academy')));
+
+      // Rating & Badges row
+      const ratingRow = el('div', 'udemy-rating-row');
+      const badgeText = c.badge || (Number(c.rating || 4.7) >= 4.8 ? 'Bestseller' : 'Highest Rated');
+      const badgeCls = badgeText.toLowerCase().replace(/[^a-z0-9]/g, '-');
+      const badge = el('span', 'udemy-tag-badge udemy-tag-' + badgeCls, badgeText);
+      const courseType = el('span', 'udemy-tag-type', 'Course');
+      const stars = el('span', 'udemy-rating-val', '★ ' + Number(c.rating || 4.7).toFixed(1));
+      const ratingsCount = el('span', 'udemy-ratings-count', Number(c.rating_count || 2400).toLocaleString('en-IN') + ' ratings');
+      ratingRow.append(badge, courseType, stars, ratingsCount);
+
+      // Footer Pricing & Add to Cart button
+      const footerRow = el('div', 'udemy-footer-row');
+      const priceCol = el('div', 'udemy-price-col');
+      const curPrice = el('div', 'udemy-price-current', '₹' + Number(c.price || 499).toFixed(2));
+      const origPrice = el('div', 'udemy-price-orig', '₹' + Number(c.original_price || 1999).toFixed(2));
+      priceCol.append(curPrice, origPrice);
+
+      const cartBtn = el('a', 'udemy-btn-cart', 'Add to cart');
+      cartBtn.href = checkoutUrl;
+
+      footerRow.append(priceCol, cartBtn);
+
+      body.append(titleLink, instructor, ratingRow, footerRow);
+      card.append(thumb, body);
+
+      out.append(card);
+      allCards.push(card);
     });
 
     updateCardsDisplay();
@@ -120,6 +180,12 @@
         }
       });
   }
+
+  // Read URL query params (from header search bar or category sub-strip)
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.has('q') && q) q.value = urlParams.get('q');
+  if (urlParams.has('cat') && cat) cat.value = urlParams.get('cat');
+  if (urlParams.has('level') && level) level.value = urlParams.get('level');
 
   q.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(load, 250); }); // debounce
   cat.addEventListener('change', load);

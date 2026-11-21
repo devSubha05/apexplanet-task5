@@ -3,7 +3,7 @@
 body{margin:0;min-height:100vh;display:flex;flex-direction:column;font:1rem/1.6 "Source Sans 3",system-ui,sans-serif;color:var(--ink);background:var(--bg)}
 h1,h2,h3,.brand{font-family:"Bricolage Grotesque",system-ui,sans-serif;line-height:1.2;margin:0 0 .6rem}
 h1{font-size:clamp(1.7rem,4vw,2.4rem);font-weight:800}h2{font-size:1.25rem}h3{font-size:1.05rem}
-a{color:var(--teal)}a:hover{color:var(--teal-dark)}
+a{color:var(--teal)}
 :focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 main,.wrap{flex:1;width:100%;max-width:100%;margin:0;padding:calc(80px + 1.8rem) 4vw 3.5rem;box-sizing:border-box;background:linear-gradient(135deg,#ebf3f5 0%,#f8fafb 30%,#fcf7ed 70%,#edf5f4 100%);background-size:250% 250%;animation:mainBgShift 14s ease infinite,mainFadeIn 0.7s cubic-bezier(0.16,1,0.3,1) both}
 .site-header{position:fixed;top:0;left:0;right:0;width:100%;z-index:1000;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.5rem;padding:.7rem 4vw;background:var(--teal);color:#fff;min-height:80px;box-sizing:border-box;box-shadow:0 2px 12px rgba(14,107,99,0.25)}
@@ -48,8 +48,20 @@ main,.wrap{flex:1;width:100%;max-width:100%;margin:0;padding:calc(80px + 1.8rem)
 .tag{font-size:.85rem;font-weight:600;color:var(--teal)}
 .meta{color:var(--muted);font-size:.92rem;margin:.3rem 0}
 .empty{color:var(--muted);padding:1rem 0}
-.filters{display:flex;flex-wrap:wrap;gap:.6rem;margin:.5rem 0}
-.filters input{flex:1 1 220px}
+.courses-section-header{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin:2rem 0 .8rem;flex-wrap:wrap}
+.courses-count-text{font-size:.9rem;font-weight:700;color:var(--muted);background:#edf3f5;padding:.25rem .75rem;border-radius:99px}
+.filters{display:flex;flex-direction:row;align-items:center;gap:.75rem;margin:.4rem 0 1.5rem;width:100%;box-shadow:none}
+.filters input,.filters select{margin-top:0;height:46px;padding:.6rem 1rem;border:1.5px solid var(--line);border-radius:10px;font:inherit;background:#fff;color:var(--ink);box-shadow:none;transition:border-color .2s ease}
+.filters input:focus,.filters select:focus{border-color:var(--teal);box-shadow:none;outline:none}
+.filters input[type=search],.filters #q{flex:2 1 280px;min-width:200px;width:auto}
+.filters select,.filters #cat{flex:1.2 1 200px;min-width:170px;width:auto;cursor:pointer}
+.filters #level{flex:1 1 150px;min-width:130px;width:auto;cursor:pointer}
+@media (max-width:680px){
+  .filters{flex-wrap:wrap}
+  .filters input[type=search],.filters #q{flex:1 1 100%}
+  .filters #cat{flex:1 1 calc(50% - .4rem)}
+  .filters #level{flex:1 1 calc(50% - .4rem)}
+}
 label{display:block;font-weight:600;margin-bottom:.9rem}
 input,select,textarea{display:block;width:100%;margin-top:.3rem;padding:.6rem .7rem;border:1px solid #b9c6cd;border-radius:8px;font:inherit;background:#fff;color:var(--ink)}
 input[type=file]{padding:.4rem}
@@ -80,4 +92,265 @@ th{background:#eaf0f3}
   .site-header nav{display:none;width:100%;flex-direction:column;align-items:flex-start;padding:.5rem 0}
   .nav-open .site-header nav{display:flex}
 }
+/* ===== New and Popular Section ===== */
+.new-popular-section{margin:0 0 2.5rem;animation:npFadeIn .6s ease both}
+.np-heading{font-size:1.5rem;font-weight:800;color:var(--ink);margin:0 0 1.2rem;letter-spacing:-.02em}
+.np-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem}
+.np-column{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:0;overflow:hidden;transition:box-shadow .25s ease,transform .25s ease}
+.np-column:hover{box-shadow:0 8px 24px rgba(14,107,99,.12);transform:translateY(-2px)}
+.np-col-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.2rem .8rem;border-bottom:1px solid var(--line);background:linear-gradient(135deg,#f7fafa 0%,#fdfaf4 100%)}
+.np-col-title{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:1.05rem;font-weight:700;color:var(--ink)}
+.np-arrow{font-size:1.2rem;color:var(--teal);font-weight:700;transition:transform .2s ease}
+.np-column:hover .np-arrow{transform:translateX(4px)}
+.np-card{display:flex;align-items:center;gap:.9rem;padding:.85rem 1.2rem;text-decoration:none;color:inherit;border-bottom:1px solid #eef1f3;transition:background .2s ease}
+.np-card:last-child{border-bottom:none}
+.np-card:hover{background:#f0f7f6}
+.np-card-icon{flex-shrink:0;width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:1.3rem;font-weight:800;color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.np-icon-popular{background:linear-gradient(135deg,#0e6b63 0%,#16a085 100%)}
+.np-icon-new{background:linear-gradient(135deg,#2563eb 0%,#60a5fa 100%)}
+.np-icon-trending{background:linear-gradient(135deg,#9333ea 0%,#c084fc 100%)}
+.np-card-body{display:flex;flex-direction:column;gap:.15rem;min-width:0}
+.np-provider{font-size:.75rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.04em}
+.np-title{font-size:.92rem;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.np-meta{font-size:.78rem;color:var(--muted)}
+@keyframes npFadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@media (max-width:900px){.np-grid{grid-template-columns:1fr}}
+@media (max-width:720px){.np-grid{grid-template-columns:1fr}}
+
+/* ===== Pricing & Course Cards ===== */
+.course-price-wrap{display:flex;align-items:center;gap:.5rem;margin:.4rem 0 .2rem;flex-wrap:wrap}
+.course-price{font-size:1.15rem;font-weight:800;color:var(--teal)}
+.course-orig-price{font-size:.9rem;color:var(--muted);text-decoration:line-through}
+.course-discount-badge{display:inline-block;background:#e6f6f4;color:var(--teal);border:1px solid rgba(14,107,99,.25);padding:.1rem .45rem;border-radius:4px;font-size:.75rem;font-weight:700}
+
+/* New and Popular Price Row */
+.np-price-row{display:flex;align-items:center;gap:.4rem;margin-top:.15rem}
+.np-price{font-size:.92rem;font-weight:800;color:var(--teal)}
+.np-orig-price{font-size:.78rem;color:var(--muted);text-decoration:line-through}
+
+/* Course Detail Page */
+.course-header-badge-row{display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem;flex-wrap:wrap}
+.badge-paid{background:#fff8e6;color:#9c6f05;border:1px solid #f6db95;padding:.2rem .65rem;border-radius:99px;font-size:.75rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.badge-enrolled{background:#e8f7f0;color:#0e6b63;border:1px solid #a8e2cb;padding:.2rem .65rem;border-radius:99px;font-size:.75rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+
+.course-purchase-box{background:linear-gradient(135deg,#ffffff 0%,#f4fbf9 50%,#fdf9ee 100%);border:2px solid rgba(14,107,99,0.22);border-radius:14px;padding:1.6rem 2rem;margin:1.6rem 0 2rem;box-shadow:0 8px 24px rgba(20,33,43,0.06)}
+.cpb-price-col{margin-bottom:1.2rem}
+.cpb-price-tag{display:flex;align-items:baseline;gap:.8rem;flex-wrap:wrap}
+.cpb-current-price{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:2.2rem;font-weight:800;color:var(--ink)}
+.cpb-orig-price{font-size:1.25rem;color:var(--muted);text-decoration:line-through}
+.cpb-discount-badge{background:#e8f7f0;color:var(--teal-dark);border:1px solid rgba(14,107,99,0.3);padding:.25rem .75rem;border-radius:6px;font-size:.85rem;font-weight:800}
+.cpb-guarantee{color:var(--muted);font-size:.9rem;margin:.4rem 0 0}
+.btn-buy-now{display:inline-block;background:linear-gradient(135deg,var(--teal) 0%,var(--teal-dark) 100%);color:#fff!important;font-size:1.15rem;font-weight:800;padding:.85rem 2.2rem;border-radius:10px;text-decoration:none!important;box-shadow:0 6px 18px rgba(14,107,99,0.3);transition:transform .2s ease,box-shadow .2s ease}
+.btn-buy-now:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(14,107,99,0.4)}
+.cpb-perks{display:flex;flex-wrap:wrap;gap:1.4rem;margin-top:1.4rem;padding-top:1.2rem;border-top:1px dashed rgba(14,107,99,0.2);color:var(--ink);font-size:.88rem;font-weight:600}
+
+.course-enrolled-banner{background:#f0faf7;border:1px solid #bce6dc;border-radius:12px;padding:1.2rem 1.6rem;margin:1.4rem 0 2rem}
+.enrolled-controls-row{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-top:.8rem;flex-wrap:wrap}
+.btn-invoice{background:#ffffff;color:var(--teal);border:1px solid var(--teal)}
+.btn-invoice:hover{background:var(--teal);color:#fff}
+
+.lesson-locked{opacity:.85;border-style:dashed}
+.lesson-header-row{display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+.lock-indicator{display:inline-flex;align-items:center;gap:.3rem;font-size:.78rem;font-weight:700;color:#9b2c2c;background:#fff5f5;border:1px solid #fed7d7;padding:.2rem .6rem;border-radius:99px}
+.lock-meta{color:var(--muted);font-size:.92rem;margin-top:.5rem}
+.lesson-num{color:var(--teal);font-weight:800}
+
+/* ===== Checkout Page ===== */
+.checkout-wrapper{display:grid;grid-template-columns:1.5fr 1fr;gap:2rem;align-items:start;margin:1rem 0 3rem}
+.checkout-back-link{display:inline-block;font-size:.9rem;font-weight:600;color:var(--muted);text-decoration:none;margin-bottom:.8rem}
+.checkout-back-link:hover{color:var(--teal);text-decoration:underline}
+.checkout-title{font-size:2rem;font-weight:800;margin:0 0 .3rem}
+.checkout-subtitle{color:var(--muted);margin:0 0 1.5rem;font-size:1.05rem}
+.checkout-card{padding:1.6rem;border-radius:12px}
+.card-heading{font-size:1.2rem;font-weight:700;color:var(--ink);margin:0 0 1.2rem;padding-bottom:.6rem;border-bottom:1px solid var(--line)}
+
+.student-info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem}
+.info-label{display:block;font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+.info-value{display:block;font-size:.98rem;font-weight:700;color:var(--ink);margin-top:.2rem}
+
+/* Payment Method Tabs */
+.payment-tabs{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.8rem;margin-bottom:1.4rem}
+.pay-tab{display:flex;align-items:center;gap:.6rem;padding:.75rem;border:2px solid var(--line);border-radius:10px;cursor:pointer;background:#fff;transition:border-color .2s ease,box-shadow .2s ease}
+.pay-tab input{display:none}
+.pay-tab-icon{font-size:1.4rem}
+.pay-tab-text{display:flex;flex-direction:column;font-size:.85rem;line-height:1.2}
+.pay-tab-text small{font-size:.72rem;color:var(--muted)}
+.pay-tab:hover{border-color:var(--teal)}
+.pay-tab.active{border-color:var(--teal);background:#f2faf8;box-shadow:0 0 0 3px rgba(14,107,99,0.15)}
+
+.tab-content{display:none;padding:1.2rem;border:1px solid var(--line);border-radius:10px;background:#fbfcfc;margin-bottom:1.4rem}
+.tab-content.active{display:block;animation:tabFade .3s ease both}
+@keyframes tabFade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+/* UPI Content */
+.upi-qr-section{display:flex;flex-wrap:wrap;align-items:center;gap:1.5rem;justify-content:center}
+.qr-code-box{text-align:center;padding:1rem;background:#fff;border:1px solid var(--line);border-radius:10px}
+.qr-caption{font-size:.75rem;font-weight:700;color:var(--muted);margin-top:.4rem}
+.upi-or{font-weight:800;color:var(--muted);font-size:.85rem}
+.upi-id-input-wrap{flex:1;min-width:240px}
+.upi-field-row{display:flex;gap:.5rem;margin-top:.3rem}
+.upi-field-row input{margin-top:0}
+.upi-verified-badge{display:block;font-size:.85rem;font-weight:700;color:#0e6b63;background:#e8f7f0;padding:.3rem .6rem;border-radius:6px;margin-top:.6rem}
+.upi-supported-apps{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.8rem}
+.upi-pill{font-size:.72rem;background:#fff;border:1px solid var(--line);padding:.2rem .5rem;border-radius:99px;font-weight:600;color:var(--muted)}
+
+/* Card Form */
+.card-number-wrapper{position:relative}
+.card-brand-badge{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:.75rem;font-weight:800;background:var(--teal);color:#fff;padding:.15rem .45rem;border-radius:4px}
+.card-expiry-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+
+/* Netbanking & Wallets */
+.section-desc{font-size:.9rem;color:var(--muted);margin:0 0 .8rem}
+.bank-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem}
+.bank-pill,.wallet-pill{display:flex;align-items:center;gap:.4rem;padding:.6rem .8rem;border:1px solid var(--line);border-radius:8px;background:#fff;cursor:pointer;font-size:.88rem;font-weight:600}
+.bank-pill input,.wallet-pill input{width:auto;margin:0}
+.wallet-options{display:grid;grid-template-columns:repeat(2,1fr);gap:.8rem}
+
+.security-badges{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin:1.4rem 0;font-size:.82rem;font-weight:600;color:var(--muted)}
+.btn-checkout-submit{width:100%;font-size:1.15rem;font-weight:800;padding:1rem;background:linear-gradient(135deg,var(--teal) 0%,var(--teal-dark) 100%);box-shadow:0 6px 20px rgba(14,107,99,0.3);border-radius:10px}
+.btn-checkout-submit:hover{box-shadow:0 8px 25px rgba(14,107,99,0.45)}
+.terms-note{font-size:.78rem;color:var(--muted);text-align:center;margin-top:.8rem}
+
+/* Checkout Sidebar / Summary */
+.summary-card{position:sticky;top:95px;padding:1.6rem;border-radius:12px}
+.summary-course-item{display:flex;gap:1rem;align-items:center;padding-bottom:1.2rem;border-bottom:1px solid var(--line);margin-bottom:1.2rem}
+.summary-course-icon{width:50px;height:50px;border-radius:10px;background:linear-gradient(135deg,var(--teal) 0%,var(--teal-dark) 100%);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:800;font-family:"Bricolage Grotesque",sans-serif;flex-shrink:0}
+.summary-course-details{min-width:0}
+.summary-category{font-size:.75rem;font-weight:700;color:var(--teal);text-transform:uppercase}
+.summary-course-title{font-size:1rem;font-weight:700;margin:.2rem 0;line-height:1.3}
+.summary-instructor{font-size:.82rem;color:var(--muted)}
+
+.coupon-box{margin-bottom:1.2rem;padding-bottom:1.2rem;border-bottom:1px solid var(--line)}
+.coupon-box label{font-size:.88rem;font-weight:700;margin-bottom:.4rem}
+.coupon-input-row{display:flex;gap:.5rem}
+.coupon-input-row input{margin-top:0}
+.coupon-msg{font-size:.82rem;margin-top:.4rem;padding:.3rem .5rem;border-radius:6px}
+.coupon-msg.success{background:#e8f7f0;color:#0e6b63;border:1px solid #a8e2cb}
+.coupon-msg.error{background:#fff5f5;color:#9b2c2c;border:1px solid #fed7d7}
+
+.price-breakdown{display:flex;flex-direction:column;gap:.6rem;font-size:.92rem}
+.price-row{display:flex;justify-content:space-between;color:var(--ink)}
+.discount-row{color:#0e6b63;font-weight:600}
+.strike{text-decoration:line-through;color:var(--muted)}
+.free-badge{background:#e8f7f0;color:#0e6b63;font-size:.75rem;font-weight:800;padding:.1rem .4rem;border-radius:4px}
+.price-divider{height:1px;background:var(--line);margin:.4rem 0}
+.total-row{font-size:1.15rem;font-weight:800}
+.total-price{color:var(--teal);font-size:1.4rem}
+
+.guarantee-card{display:flex;gap:.8rem;align-items:flex-start;background:#f8fafb;border:1px solid var(--line);border-radius:8px;padding:.8rem;margin-top:1.2rem}
+.guarantee-icon{font-size:1.5rem}
+.guarantee-card strong{display:block;font-size:.85rem;color:var(--ink)}
+.guarantee-card p{font-size:.78rem;color:var(--muted);margin:.2rem 0 0;line-height:1.4}
+
+/* ===== Receipt & Tax Invoice Page ===== */
+.receipt-container{max-width:760px;margin:1rem auto 3rem}
+.receipt-success-banner{text-align:center;padding:2rem 1.5rem 2.2rem;background:#ffffff;border:1px solid var(--line);border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,0.05);margin-bottom:1.8rem}
+.success-icon-bubble{width:64px;height:64px;border-radius:50%;background:#e6f8f1;color:#0e6b63;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:800;margin:0 auto 1rem;border:3px solid #bcecd8}
+.receipt-success-banner h1{font-size:2rem;color:var(--ink);margin:0 0 .5rem}
+.receipt-success-banner p{color:var(--muted);font-size:1.05rem;max-width:50ch;margin:0 auto 1.5rem}
+.receipt-cta-row{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap}
+.btn-primary-cta{background:var(--teal);color:#fff!important;font-weight:700;padding:.75rem 1.6rem;border-radius:8px;text-decoration:none!important}
+.btn-primary-cta:hover{background:var(--teal-dark)}
+.btn-secondary-cta{background:#fff;color:var(--ink);border:1px solid var(--line);font-weight:700;padding:.75rem 1.4rem;border-radius:8px;cursor:pointer}
+.btn-secondary-cta:hover{background:#f3f6f8}
+.btn-outline-cta{background:none;color:var(--teal)!important;border:1px solid var(--teal);font-weight:700;padding:.75rem 1.4rem;border-radius:8px;text-decoration:none!important}
+
+.invoice-card{padding:2.4rem;background:#fff;border:1px solid #d0dbe0;border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,0.05)}
+.invoice-header{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem}
+.invoice-brand{font-family:"Bricolage Grotesque",sans-serif;font-size:1.8rem;font-weight:800;color:var(--teal)}
+.invoice-company-sub{color:var(--muted);font-size:.85rem;margin:.2rem 0 0}
+.invoice-badge-wrap{text-align:right}
+.invoice-status-paid{display:inline-block;background:#e8f7f0;color:#0e6b63;border:1px solid #a8e2cb;padding:.3rem .8rem;border-radius:99px;font-size:.85rem;font-weight:800;letter-spacing:.05em}
+.invoice-date{display:block;font-size:.82rem;color:var(--muted);margin-top:.4rem}
+.invoice-divider{height:2px;background:#e8eff2;margin:1.6rem 0}
+.invoice-meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1.4rem;margin-bottom:1.8rem}
+.meta-label{display:block;font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.meta-val{display:block;font-size:1.05rem;color:var(--ink);margin:.2rem 0}
+.meta-sub{display:block;font-size:.82rem;color:var(--muted)}
+
+.invoice-table-wrap{margin-bottom:1.8rem}
+.invoice-table{width:100%;border-collapse:collapse}
+.invoice-table th{background:#f3f7f9;padding:.8rem 1rem;font-size:.85rem;text-transform:uppercase;color:var(--muted);font-weight:700;border-bottom:2px solid #d5dee3}
+.invoice-table td{padding:1rem;border-bottom:1px solid #eef2f5}
+.invoice-table tfoot td{border-bottom:none;padding:.5rem 1rem}
+.invoice-total-row td{padding-top:1rem!important;border-top:2px solid #d5dee3!important}
+
+.invoice-footer{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;padding-top:1.4rem;border-top:1px dashed #d5dee3;font-size:.82rem;color:var(--muted)}
+.invoice-seal{display:flex;align-items:center;gap:.4rem;font-weight:700;color:var(--teal)}
+.invoice-help{margin:0}
+
+/* Dashboard Badges */
+.dashboard-header-bar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem}
+.pill-payment-method{background:#edf4f7;color:var(--ink);padding:.2rem .6rem;border-radius:99px;font-size:.8rem;font-weight:700}
+.badge-status-completed{background:#e8f7f0;color:#0e6b63;padding:.2rem .6rem;border-radius:99px;font-size:.8rem;font-weight:700}
+
+/* Print Invoice Clean Styling */
+@media print{
+  body{background:#fff!important;color:#000!important}
+  .site-header,.site-footer,.receipt-success-banner,.checkout-back-link,.btn-primary-cta,.btn-secondary-cta,.btn-outline-cta{display:none!important}
+  main,.wrap{padding:0!important;background:none!important}
+  .receipt-container{max-width:100%!important;margin:0!important}
+  .invoice-card{box-shadow:none!important;border:1px solid #ccc!important}
+}
+
+@media (max-width:900px){
+  .checkout-wrapper{grid-template-columns:1fr}
+  .summary-card{position:static}
+  .bank-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+/* ===== Udemy Style Course Cards ===== */
+.udemy-style-card{display:flex;flex-direction:column;padding:0!important;border:1px solid #e2e8f0!important;border-left:1px solid #e2e8f0!important;border-radius:12px!important;overflow:hidden;background:#fff;text-decoration:none;color:inherit;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
+.udemy-style-card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(20,33,43,.12)!important;border-color:#cbd5e1!important}
+
+.udemy-thumb-wrap{position:relative;width:100%;height:160px;overflow:hidden;background:#e2e8f0;cursor:pointer}
+.udemy-thumb-img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s ease}
+.udemy-thumb-wrap:hover .udemy-thumb-img{transform:scale(1.06)}
+
+.udemy-badge-premium{position:absolute;top:10px;left:10px;background:linear-gradient(135deg,#5b21b6 0%,#7c3aed 100%);color:#fff;font-size:.72rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:.24rem .6rem;border-radius:6px;box-shadow:0 3px 8px rgba(91,33,182,.35);display:inline-flex;align-items:center;gap:4px;z-index:2}
+
+.udemy-wishlist-btn{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.94);border:1px solid rgba(0,0,0,.08);color:#475569;font-size:1.15rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .2s ease,background .2s ease,color .2s ease;box-shadow:0 2px 6px rgba(0,0,0,.15);z-index:2;line-height:1}
+.udemy-wishlist-btn:hover{transform:scale(1.1);background:#fff;color:#e11d48}
+.udemy-wishlist-btn.active{color:#e11d48;background:#fff}
+
+.udemy-card-body{padding:1rem 1.1rem 1.1rem;display:flex;flex-direction:column;flex:1;gap:.45rem}
+.udemy-title-link{text-decoration:none;color:inherit}
+.udemy-title-link:hover .udemy-card-title{color:var(--teal)}
+.udemy-card-title{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:1.02rem;font-weight:700;line-height:1.35;color:#0f172a;margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.7rem}
+
+.udemy-card-instructor{font-size:.82rem;color:#64748b;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.udemy-rating-row{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;font-size:.8rem;margin-top:.1rem}
+.udemy-tag-badge{font-size:.72rem;font-weight:800;padding:.15rem .5rem;border-radius:4px;letter-spacing:.02em}
+.udemy-tag-bestseller{background:#dcfce7;color:#15803d;border:1px solid #bbf7d0}
+.udemy-tag-highest-rated{background:#fef3c7;color:#b45309;border:1px solid #fde68a}
+.udemy-tag-hot---new,.udemy-tag-hot-new{background:#f3e8ff;color:#7e22ce;border:1px solid #e9d5ff}
+.udemy-tag-course{background:#f1f5f9;color:#475569;border:1px solid #e2e8f0}
+
+.udemy-tag-type{font-size:.72rem;color:#64748b;border:1px solid #cbd5e1;padding:.12rem .45rem;border-radius:4px;background:#f8fafc}
+.udemy-rating-val{font-weight:800;color:#b45309;font-size:.84rem}
+.udemy-ratings-count{color:#64748b;font-size:.75rem}
+
+.udemy-footer-row{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-top:auto;padding-top:.7rem;border-top:1px solid #f1f5f9}
+.udemy-price-col{display:flex;flex-direction:column}
+.udemy-price-current{font-size:1.2rem;font-weight:800;color:#0f172a;line-height:1.1}
+.udemy-price-orig{font-size:.82rem;color:#94a3b8;text-decoration:line-through}
+
+.udemy-btn-cart{display:inline-flex;align-items:center;justify-content:center;padding:.45rem .95rem;font-size:.84rem;font-weight:700;color:#5b21b6;background:#fff;border:1.5px solid #5b21b6;border-radius:8px;text-decoration:none;transition:all .2s ease;box-shadow:0 1px 4px rgba(91,33,182,.1)}
+.udemy-btn-cart:hover{background:#5b21b6;color:#fff;box-shadow:0 4px 12px rgba(91,33,182,.25)}
+
+/* New and Popular Image Thumbnail */
+.np-card-img-wrap{width:68px;height:68px;border-radius:10px;overflow:hidden;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.np-card-photo{width:100%;height:100%;object-fit:cover;display:block}
+
+/* Course Detail Page Header with Cover Photo */
+.course-detail-top-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:2rem;align-items:center;margin-bottom:1.5rem}
+.course-detail-cover-img{width:100%;max-height:260px;object-fit:cover;border-radius:14px;box-shadow:0 8px 24px rgba(20,33,43,0.12);border:1px solid var(--line)}
+
+.summary-course-img{width:56px;height:56px;object-fit:cover;border-radius:8px;flex-shrink:0;border:1px solid var(--line)}
+
+@media (max-width:850px){
+  .course-detail-top-grid{grid-template-columns:1fr}
+}
+
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}

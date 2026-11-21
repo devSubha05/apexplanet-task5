@@ -36,6 +36,12 @@ CREATE TABLE courses (
   level ENUM('Beginner','Intermediate','Advanced') NOT NULL DEFAULT 'Beginner',
   instructor VARCHAR(80) NOT NULL,
   duration_hours DECIMAL(4,1) NOT NULL DEFAULT 1.0,
+  price DECIMAL(8,2) NOT NULL DEFAULT 499.00,
+  original_price DECIMAL(8,2) NOT NULL DEFAULT 1999.00,
+  image VARCHAR(255) DEFAULT NULL,
+  rating DECIMAL(2,1) NOT NULL DEFAULT 4.7,
+  rating_count INT NOT NULL DEFAULT 1850,
+  badge VARCHAR(30) DEFAULT 'Bestseller',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (category_id) REFERENCES categories(id),
   FULLTEXT KEY ft_courses (title, description)
@@ -61,6 +67,24 @@ CREATE TABLE enrollments (
   FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
+CREATE TABLE payments (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  order_number VARCHAR(32) NOT NULL UNIQUE,
+  user_id INT NOT NULL,
+  course_id INT NOT NULL,
+  amount DECIMAL(8,2) NOT NULL,
+  original_amount DECIMAL(8,2) NOT NULL,
+  discount_amount DECIMAL(8,2) NOT NULL DEFAULT 0.00,
+  payment_method VARCHAR(50) NOT NULL,
+  transaction_id VARCHAR(64) NOT NULL,
+  payment_status ENUM('completed','pending','failed') NOT NULL DEFAULT 'completed',
+  card_last4 VARCHAR(4) DEFAULT NULL,
+  payment_details TEXT DEFAULT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
 CREATE TABLE lesson_progress (
   user_id INT NOT NULL,
   lesson_id INT NOT NULL,
@@ -77,31 +101,31 @@ INSERT INTO users (name,email,password,role,is_verified) VALUES
 
 INSERT INTO categories (name) VALUES ('Web Development'),('Databases'),('Programming'),('Design'),('Data Science'),('Mobile Development'),('DevOps'),('Cybersecurity');
 
-INSERT INTO courses (title,description,category_id,level,instructor,duration_hours) VALUES
-('HTML & CSS Foundations','Build and style responsive pages from scratch using semantic HTML, Flexbox and Grid.',1,'Beginner','Admin',6.0),
-('JavaScript in the Browser','DOM, events, fetch and AJAX: make pages react to what people do.',1,'Intermediate','Admin',8.5),
-('PHP & MySQL Essentials','Sessions, PDO, prepared statements and CRUD apps with a MySQL backend.',2,'Intermediate','Admin',10.0),
-('Git & GitHub Workflow','Branches, pull requests and deploying from a GitHub repository.',3,'Beginner','Admin',3.5),
-('React.js Fundamentals','Build dynamic single-page apps with components, hooks, state management and React Router.',1,'Intermediate','Admin',12.0),
-('Node.js & Express API','Create RESTful APIs with Express, middleware, JWT authentication and error handling.',1,'Intermediate','Admin',9.5),
-('Tailwind CSS Masterclass','Utility-first CSS framework: responsive design, custom themes, dark mode and component patterns.',1,'Beginner','Admin',5.0),
-('TypeScript from Scratch','Static typing for JavaScript: interfaces, generics, enums, decorators and compiler config.',3,'Intermediate','Admin',7.5),
-('Python for Beginners','Variables, loops, functions, modules and file handling with real-world mini projects.',3,'Beginner','Admin',8.0),
-('Data Structures & Algorithms','Arrays, linked lists, trees, graphs, sorting and searching with Big-O analysis.',3,'Advanced','Admin',14.0),
-('MongoDB Essentials','NoSQL document database: CRUD, indexes, aggregation pipeline and Mongoose ODM.',2,'Beginner','Admin',6.0),
-('PostgreSQL Deep Dive','Advanced SQL, joins, window functions, CTEs, indexing strategies and query optimization.',2,'Advanced','Admin',10.5),
-('Redis Caching & Queues','In-memory key-value store for caching, sessions, pub/sub and task queues.',2,'Intermediate','Admin',4.5),
-('UI/UX Design Principles','Visual hierarchy, color theory, typography, spacing and accessibility guidelines.',4,'Beginner','Admin',5.5),
-('Figma for Developers','Auto layout, components, variants, prototyping and developer handoff in Figma.',4,'Beginner','Admin',4.0),
-('Responsive Web Design','Mobile-first design, fluid grids, container queries and modern CSS layout techniques.',4,'Intermediate','Admin',6.5),
-('Python Data Analysis','NumPy, Pandas, Matplotlib and Seaborn for exploring, cleaning and visualizing datasets.',5,'Intermediate','Admin',9.0),
-('Machine Learning Basics','Regression, classification, decision trees, random forests and model evaluation with scikit-learn.',5,'Advanced','Admin',15.0),
-('SQL for Data Analytics','Window functions, pivoting, cohort analysis and dashboard queries for business insights.',5,'Intermediate','Admin',7.0),
-('Flutter App Development','Cross-platform mobile apps with Dart: widgets, state management, navigation and Firebase.',6,'Intermediate','Admin',11.0),
-('React Native Quickstart','Build native iOS and Android apps using React Native, Expo and device APIs.',6,'Intermediate','Admin',8.0),
-('Docker & Containers','Images, containers, volumes, networks, Docker Compose and multi-stage builds.',7,'Beginner','Admin',6.0),
-('CI/CD with GitHub Actions','Automate testing, building and deployment pipelines with GitHub Actions workflows.',7,'Intermediate','Admin',5.0),
-('Web Security Fundamentals','OWASP Top 10, XSS, CSRF, SQL injection, HTTPS, CSP headers and secure coding practices.',8,'Intermediate','Admin',8.5);
+INSERT INTO courses (title,description,category_id,level,instructor,duration_hours,price,original_price,image,rating,rating_count,badge) VALUES
+('HTML & CSS Foundations','Build and style responsive pages from scratch using semantic HTML, Flexbox and Grid.',1,'Beginner','Admin',6.0,499.00,1999.00,'assets/img/courses/course-1.jpg',4.8,2895,'Bestseller'),
+('JavaScript in the Browser','DOM, events, fetch and AJAX: make pages react to what people do.',1,'Intermediate','Admin',8.5,799.00,2499.00,'assets/img/courses/course-2.jpg',4.7,2607,'Highest Rated'),
+('PHP & MySQL Essentials','Sessions, PDO, prepared statements and CRUD apps with a MySQL backend.',2,'Intermediate','Admin',10.0,799.00,2499.00,'assets/img/courses/course-3.jpg',4.9,3140,'Bestseller'),
+('Git & GitHub Workflow','Branches, pull requests and deploying from a GitHub repository.',3,'Beginner','Admin',3.5,499.00,1999.00,'assets/img/courses/course-4.jpg',4.6,1420,'Hot & New'),
+('React.js Fundamentals','Build dynamic single-page apps with components, hooks, state management and React Router.',1,'Intermediate','Admin',12.0,899.00,2799.00,'assets/img/courses/course-5.jpg',4.9,4580,'Bestseller'),
+('Node.js & Express API','Create RESTful APIs with Express, middleware, JWT authentication and error handling.',1,'Intermediate','Admin',9.5,799.00,2499.00,'assets/img/courses/course-6.jpg',4.7,1980,'Highest Rated'),
+('Tailwind CSS Masterclass','Utility-first CSS framework: responsive design, custom themes, dark mode and component patterns.',1,'Beginner','Admin',5.0,499.00,1999.00,'assets/img/courses/course-7.jpg',4.8,2150,'Hot & New'),
+('TypeScript from Scratch','Static typing for JavaScript: interfaces, generics, enums, decorators and compiler config.',3,'Intermediate','Admin',7.5,799.00,2499.00,'assets/img/courses/course-8.jpg',4.8,2490,'Bestseller'),
+('Python for Beginners','Variables, loops, functions, modules and file handling with real-world mini projects.',3,'Beginner','Admin',8.0,999.00,2999.00,'assets/img/courses/course-9.jpg',4.9,5820,'Bestseller'),
+('Data Structures & Algorithms','Arrays, linked lists, trees, graphs, sorting and searching with Big-O analysis.',3,'Advanced','Admin',14.0,1299.00,3999.00,'assets/img/courses/course-10.jpg',4.9,3710,'Highest Rated'),
+('MongoDB Essentials','NoSQL document database: CRUD, indexes, aggregation pipeline and Mongoose ODM.',2,'Beginner','Admin',6.0,499.00,1999.00,'assets/img/courses/course-11.jpg',4.6,1640,'Hot & New'),
+('PostgreSQL Deep Dive','Advanced SQL, joins, window functions, CTEs, indexing strategies and query optimization.',2,'Advanced','Admin',10.5,1299.00,3999.00,'assets/img/courses/course-12.jpg',4.8,2210,'Highest Rated'),
+('Redis Caching & Queues','In-memory key-value store for caching, sessions, pub/sub and task queues.',2,'Intermediate','Admin',4.5,799.00,2499.00,'assets/img/courses/course-13.jpg',4.7,1190,'Course'),
+('UI/UX Design Principles','Visual hierarchy, color theory, typography, spacing and accessibility guidelines.',4,'Beginner','Admin',5.5,499.00,1999.00,'assets/img/courses/course-14.jpg',4.9,3450,'Bestseller'),
+('Figma for Developers','Auto layout, components, variants, prototyping and developer handoff in Figma.',4,'Beginner','Admin',4.0,499.00,1999.00,'assets/img/courses/course-15.jpg',4.8,2890,'Hot & New'),
+('Responsive Web Design','Mobile-first design, fluid grids, container queries and modern CSS layout techniques.',4,'Intermediate','Admin',6.5,799.00,2499.00,'assets/img/courses/course-16.jpg',4.7,1730,'Course'),
+('Python Data Analysis','NumPy, Pandas, Matplotlib and Seaborn for exploring, cleaning and visualizing datasets.',5,'Intermediate','Admin',9.0,999.00,2999.00,'assets/img/courses/course-17.jpg',4.8,3980,'Bestseller'),
+('Machine Learning Basics','Regression, classification, decision trees, random forests and model evaluation with scikit-learn.',5,'Advanced','Admin',15.0,1299.00,3999.00,'assets/img/courses/course-18.jpg',4.9,6120,'Highest Rated'),
+('SQL for Data Analytics','Window functions, pivoting, cohort analysis and dashboard queries for business insights.',5,'Intermediate','Admin',7.0,799.00,2499.00,'assets/img/courses/course-19.jpg',4.7,2340,'Course'),
+('Flutter App Development','Cross-platform mobile apps with Dart: widgets, state management, navigation and Firebase.',6,'Intermediate','Admin',11.0,899.00,2799.00,'assets/img/courses/course-20.jpg',4.8,2760,'Bestseller'),
+('React Native Quickstart','Build native iOS and Android apps using React Native, Expo and device APIs.',6,'Intermediate','Admin',8.0,899.00,2799.00,'assets/img/courses/course-21.jpg',4.7,2140,'Hot & New'),
+('Docker & Containers','Images, containers, volumes, networks, Docker Compose and multi-stage builds.',7,'Beginner','Admin',6.0,699.00,2199.00,'assets/img/courses/course-22.jpg',4.8,3280,'Bestseller'),
+('CI/CD with GitHub Actions','Automate testing, building and deployment pipelines with GitHub Actions workflows.',7,'Intermediate','Admin',5.0,799.00,2499.00,'assets/img/courses/course-23.jpg',4.7,1890,'Course'),
+('Web Security Fundamentals','OWASP Top 10, XSS, CSRF, SQL injection, HTTPS, CSP headers and secure coding practices.',8,'Intermediate','Admin',8.5,699.00,2199.00,'assets/img/courses/course-24.jpg',4.9,4150,'Highest Rated');
 
 INSERT INTO lessons (course_id,title,content,video_url,position) VALUES
 (1,'Semantic page structure','Use header, nav, main, section and footer so browsers and screen readers understand your page.',NULL,1),

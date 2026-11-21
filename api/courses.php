@@ -2,7 +2,9 @@
 require_once __DIR__ . '/../includes/functions.php';
 header('Content-Type: application/json; charset=utf-8');
 $q = trim($_GET['q'] ?? ''); $cat = (int)($_GET['cat'] ?? 0); $level = $_GET['level'] ?? '';
-$sql = 'SELECT c.id,c.title,c.description,c.level,c.instructor,c.duration_hours,cat.name AS category,
+$sql = 'SELECT c.id,c.title,c.description,c.level,c.instructor,c.duration_hours,c.price,c.original_price,
+        COALESCE(c.image, CONCAT("assets/img/courses/course-", c.id, ".jpg")) AS image,
+        c.rating, c.rating_count, c.badge, cat.name AS category,
         (SELECT COUNT(*) FROM lessons l WHERE l.course_id=c.id) AS lessons,
         (SELECT COUNT(*) FROM enrollments e WHERE e.course_id=c.id) AS learners
         FROM courses c JOIN categories cat ON cat.id=c.category_id WHERE 1=1';

@@ -1,24 +1,27 @@
 <?php
 $base = '../'; require_once __DIR__ . '/../includes/functions.php'; require_admin();
 $id = (int)($_GET['id'] ?? 0);
-$c = ['title' => '', 'description' => '', 'category_id' => 0, 'level' => 'Beginner', 'instructor' => '', 'duration_hours' => '1.0'];
+$c = ['title' => '', 'description' => '', 'category_id' => 0, 'level' => 'Beginner', 'instructor' => '', 'duration_hours' => '1.0', 'price' => '499.00', 'original_price' => '1999.00'];
 if ($id) { $s = db()->prepare('SELECT * FROM courses WHERE id=?'); $s->execute([$id]); $c = $s->fetch() ?: redirect('courses.php'); }
 $cats = db()->query('SELECT id,name FROM categories ORDER BY name')->fetchAll();
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
     $c = ['title' => trim($_POST['title'] ?? ''), 'description' => trim($_POST['description'] ?? ''), 'category_id' => (int)($_POST['category_id'] ?? 0),
-          'level' => $_POST['level'] ?? '', 'instructor' => trim($_POST['instructor'] ?? ''), 'duration_hours' => $_POST['duration_hours'] ?? ''];
+          'level' => $_POST['level'] ?? '', 'instructor' => trim($_POST['instructor'] ?? ''), 'duration_hours' => $_POST['duration_hours'] ?? '',
+          'price' => $_POST['price'] ?? '499.00', 'original_price' => $_POST['original_price'] ?? '1999.00'];
     if ($c['title'] === '' || mb_strlen($c['title']) > 120) $errors[] = 'Title is required (up to 120 characters).';
     if ($c['description'] === '') $errors[] = 'Add a description.';
     if (!in_array($c['category_id'], array_column($cats, 'id'))) $errors[] = 'Pick a category.';
     if (!in_array($c['level'], ['Beginner', 'Intermediate', 'Advanced'], true)) $errors[] = 'Pick a level.';
     if ($c['instructor'] === '') $errors[] = 'Add an instructor name.';
     if (!is_numeric($c['duration_hours']) || $c['duration_hours'] <= 0 || $c['duration_hours'] > 999) $errors[] = 'Duration must be a positive number of hours.';
+    if (!is_numeric($c['price']) || $c['price'] < 0) $errors[] = 'Price must be a valid positive number.';
+    if (!is_numeric($c['original_price']) || $c['original_price'] < 0) $errors[] = 'Original price must be a valid positive number.';
     if (!$errors) {
-        $v = [$c['title'], $c['description'], $c['category_id'], $c['level'], $c['instructor'], $c['duration_hours']];
-        if ($id) { db()->prepare('UPDATE courses SET title=?,description=?,category_id=?,level=?,instructor=?,duration_hours=? WHERE id=?')->execute([...$v, $id]); }
-        else { db()->prepare('INSERT INTO courses (title,description,category_id,level,instructor,duration_hours) VALUES (?,?,?,?,?,?)')->execute($v); $id = (int)db()->lastInsertId(); }
+        $v = [$c['title'], $c['description'], $c['category_id'], $c['level'], $c['instructor'], $c['duration_hours'], $c['price'], $c['original_price']];
+        if ($id) { db()->prepare('UPDATE courses SET title=?,description=?,category_id=?,level=?,instructor=?,duration_hours=?,price=?,original_price=? WHERE id=?')->execute([...$v, $id]); }
+        else { db()->prepare('INSERT INTO courses (title,description,category_id,level,instructor,duration_hours,price,original_price) VALUES (?,?,?,?,?,?,?,?)')->execute($v); $id = (int)db()->lastInsertId(); }
         flash('success', 'Course saved. Now add its lessons.'); redirect("lessons.php?course_id=$id");
     }
 }
@@ -33,6 +36,10 @@ $pageTitle = $id ? 'Edit course' : 'Add course'; require __DIR__ . '/../includes
   <label>Level <select name="level"><?php foreach (['Beginner', 'Intermediate', 'Advanced'] as $lv): ?><option <?= $lv === $c['level'] ? 'selected' : '' ?>><?= $lv ?></option><?php endforeach; ?></select></label>
   <label>Instructor <input name="instructor" value="<?= e($c['instructor']) ?>" required maxlength="80"></label>
   <label>Duration in hours <input type="number" name="duration_hours" step="0.5" min="0.5" value="<?= e($c['duration_hours']) ?>" required></label>
+  <div class="two-col">
+    <label>Selling Price (₹) <input type="number" name="price" step="1" min="0" value="<?= e($c['price']) ?>" required></label>
+    <label>Original Price (₹) <input type="number" name="original_price" step="1" min="0" value="<?= e($c['original_price']) ?>" required></label>
+  </div>
   <button class="btn">Save course</button>
 </form></section>
 <?php require __DIR__ . '/../includes/footer.php'; ?>
