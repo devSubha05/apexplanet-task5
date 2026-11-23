@@ -111,6 +111,95 @@ $pageTitle = 'Courses'; require __DIR__ . '/includes/header.php'; ?>
   </div>
 </section>
 <!-- ===== End New and Popular ===== -->
+
+<!-- ===== Three Coursera-Style Feature Cards ===== -->
+<section class="promo-banners-row" aria-label="Learning Pathways">
+  <!-- Card 1: Launch a new career -->
+  <a href="#results" class="promo-banner-card" onclick="document.getElementById('level').value='Beginner'; document.getElementById('level').dispatchEvent(new Event('change'));">
+    <span class="promo-banner-text">Launch a new career</span>
+    <div class="promo-banner-icon">
+      <svg viewBox="0 0 80 60" width="70" height="52" fill="none">
+        <rect x="15" y="5" width="55" height="48" rx="10" transform="rotate(-6 15 5)" fill="#ede9fe" opacity="0.85"/>
+        <rect x="18" y="10" width="46" height="36" rx="4" stroke="#1d4ed8" stroke-width="2.5" fill="#ffffff"/>
+        <line x1="24" y1="18" x2="48" y2="18" stroke="#93c5fd" stroke-width="2" stroke-linecap="round"/>
+        <line x1="24" y1="24" x2="40" y2="24" stroke="#93c5fd" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="50" cy="30" r="5" stroke="#1d4ed8" stroke-width="2" fill="#dbeafe"/>
+        <path d="M48 34l2 6 2-6" stroke="#1d4ed8" stroke-width="1.8" fill="none"/>
+      </svg>
+    </div>
+  </a>
+
+  <!-- Card 2: Try LearnLoop for Business -->
+  <a href="course.php?id=3" class="promo-banner-card">
+    <span class="promo-banner-text">Try LearnLoop for Business</span>
+    <div class="promo-banner-icon">
+      <svg viewBox="0 0 80 60" width="70" height="52" fill="none">
+        <rect x="15" y="5" width="55" height="48" rx="10" transform="rotate(-6 15 5)" fill="#ede9fe" opacity="0.85"/>
+        <path d="M22 44L38 22l14 22" stroke="#1d4ed8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="#ffffff"/>
+        <path d="M38 44L48 30l12 14" stroke="#1d4ed8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="#eff6ff"/>
+        <line x1="38" y1="22" x2="38" y2="10" stroke="#1d4ed8" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M38 10h12l-3 4 3 4H38" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.8" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </a>
+
+  <!-- Card 3: Earn a degree -->
+  <a href="dashboard.php" class="promo-banner-card">
+    <span class="promo-banner-text">Earn a degree</span>
+    <div class="promo-banner-icon">
+      <svg viewBox="0 0 80 60" width="70" height="52" fill="none">
+        <rect x="15" y="5" width="55" height="48" rx="10" transform="rotate(-6 15 5)" fill="#ede9fe" opacity="0.85"/>
+        <polygon points="42,14 66,24 42,34 18,24" stroke="#1d4ed8" stroke-width="2.5" fill="#ffffff" stroke-linejoin="round"/>
+        <path d="M26 28v8c0 5 7 9 16 9s16-4 16-9v-8" stroke="#1d4ed8" stroke-width="2.2" fill="#eff6ff"/>
+        <path d="M56 24v12" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="56" cy="38" r="2.5" fill="#1d4ed8"/>
+      </svg>
+    </div>
+  </a>
+</section>
+
+<!-- ===== Explore Categories Section ===== -->
+<section class="explore-categories-section" aria-label="Explore Categories">
+  <h2 class="explore-cat-heading">Explore categories</h2>
+  <div class="explore-cat-chips-wrap">
+    <button type="button" class="cat-chip" data-query="Business">
+      <span class="cat-chip-icon">💼</span> Business
+    </button>
+    <button type="button" class="cat-chip" data-query="Machine Learning">
+      <span class="cat-chip-icon">✦</span> Artificial Intelligence
+    </button>
+    <button type="button" class="cat-chip" data-cat="Data Science">
+      <span class="cat-chip-icon">📈</span> Data Science
+    </button>
+    <button type="button" class="cat-chip" data-cat="Programming">
+      <span class="cat-chip-icon">&lt;&gt;</span> Computer Science
+    </button>
+    <button type="button" class="cat-chip" data-cat="Web Development">
+      <span class="cat-chip-icon">💻</span> Information Technology
+    </button>
+    <button type="button" class="cat-chip" data-query="Workflow">
+      <span class="cat-chip-icon">🚀</span> Personal Development
+    </button>
+    <button type="button" class="cat-chip" data-cat="Cybersecurity">
+      <span class="cat-chip-icon">🛡️</span> Healthcare &amp; Security
+    </button>
+    <button type="button" class="cat-chip" data-query="Python">
+      <span class="cat-chip-icon">🌐</span> Language Learning
+    </button>
+    <button type="button" class="cat-chip" data-cat="Databases">
+      <span class="cat-chip-icon">👥</span> Databases &amp; Systems
+    </button>
+    <button type="button" class="cat-chip" data-cat="Design">
+      <span class="cat-chip-icon">✏️</span> Arts and Humanities
+    </button>
+    <button type="button" class="cat-chip" data-cat="DevOps">
+      <span class="cat-chip-icon">🧪</span> Physical Science &amp; Engineering
+    </button>
+    <button type="button" class="cat-chip" data-query="Algorithms">
+      <span class="cat-chip-icon">⊞</span> Math and Logic
+    </button>
+  </div>
+</section>
 <!-- ===== All Courses & Filters Section ===== -->
 <div class="courses-section-header">
   <h2 class="np-heading" style="margin-bottom:0;">Explore all courses</h2>

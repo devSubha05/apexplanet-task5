@@ -187,8 +187,50 @@
   if (urlParams.has('cat') && cat) cat.value = urlParams.get('cat');
   if (urlParams.has('level') && level) level.value = urlParams.get('level');
 
+  // Handle Explore categories chip clicks
+  const chips = document.querySelectorAll('.cat-chip');
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      const isAlreadyActive = chip.classList.contains('active');
+      chips.forEach(c => c.classList.remove('active'));
+
+      if (isAlreadyActive) {
+        if (cat) cat.value = '0';
+        if (q) q.value = '';
+        load();
+        return;
+      }
+
+      chip.classList.add('active');
+      const targetCat = chip.dataset.cat;
+      const targetQuery = chip.dataset.query;
+
+      if (targetCat && cat) {
+        for (let opt of cat.options) {
+          if (opt.text.toLowerCase().includes(targetCat.toLowerCase())) {
+            cat.value = opt.value;
+            break;
+          }
+        }
+        if (q) q.value = '';
+      } else if (targetQuery && q) {
+        if (cat) cat.value = '0';
+        q.value = targetQuery;
+      }
+
+      load();
+      const targetElem = document.getElementById('results');
+      if (targetElem) {
+        targetElem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
   q.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(load, 250); }); // debounce
-  cat.addEventListener('change', load);
+  cat.addEventListener('change', () => {
+    chips.forEach(c => c.classList.remove('active'));
+    load();
+  });
   level.addEventListener('change', load);
   load();
 })();
