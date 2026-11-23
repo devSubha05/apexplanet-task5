@@ -26,6 +26,118 @@ $trendingCourses = db()->query('SELECT c.id, c.title, c.level, c.price, c.origin
   WHERE cat.name IN ("Data Science","Cybersecurity","DevOps","Programming")
   ORDER BY c.id DESC LIMIT 3')->fetchAll();
 
+// --- Trending Searches Data (Python, Data Analytics, Healthcare) ---
+$trendingSearches = [
+  'python' => [
+    'title' => 'Python',
+    'query' => 'Python',
+    'cards' => [
+      [
+        'course_id' => 9,
+        'title' => 'Microsoft Python Development',
+        'org' => 'Microsoft',
+        'org_icon_html' => '<svg width="12" height="12" viewBox="0 0 20 20" class="ts-svg-icon" aria-hidden="true"><rect x="1" y="1" width="8" height="8" fill="#F25022"/><rect x="11" y="1" width="8" height="8" fill="#7FBA00"/><rect x="1" y="11" width="8" height="8" fill="#00A4EF"/><rect x="11" y="11" width="8" height="8" fill="#FFB900"/></svg>',
+        'tag' => 'PYTHON',
+        'type' => 'Professional Certificate',
+        'rating' => '4.4',
+        'image' => 'assets/img/courses/course-9.jpg'
+      ],
+      [
+        'course_id' => 4,
+        'title' => 'Google IT Automation with Python',
+        'org' => 'Google',
+        'org_icon_html' => '<svg width="13" height="13" viewBox="0 0 24 24" class="ts-svg-icon" aria-hidden="true"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>',
+        'tag' => 'AUTOMATION',
+        'type' => 'Professional Certificate',
+        'rating' => '4.8',
+        'image' => 'assets/img/courses/course-4.jpg'
+      ],
+      [
+        'course_id' => 10,
+        'title' => 'Introduction to Programming with Python and Java',
+        'org' => 'University of Pennsylvania',
+        'org_icon_html' => '<span class="ts-org-tag penn-tag">Penn</span>',
+        'tag' => 'PROGRAM',
+        'type' => 'Specialization',
+        'rating' => '4.5',
+        'image' => 'assets/img/courses/course-10.jpg'
+      ]
+    ]
+  ],
+  'data_analytics' => [
+    'title' => 'Data Analytics',
+    'query' => 'Data Analytics',
+    'cards' => [
+      [
+        'course_id' => 24,
+        'title' => 'IBM Cybersecurity Analyst',
+        'org' => 'IBM',
+        'org_icon_html' => '<span class="ts-org-tag ibm-tag">IBM</span>',
+        'tag' => 'CYBER',
+        'type' => 'Professional Certificate',
+        'rating' => '4.6',
+        'image' => 'assets/img/courses/course-24.jpg'
+      ],
+      [
+        'course_id' => 19,
+        'title' => 'Tableau Business Intelligence Analyst',
+        'org' => 'Tableau Learning Partner',
+        'org_icon_html' => '<span class="ts-org-tag tab-tag">✦</span>',
+        'tag' => 'TABLEAU',
+        'type' => 'Professional Certificate',
+        'rating' => '4.7',
+        'image' => 'assets/img/courses/course-19.jpg'
+      ],
+      [
+        'course_id' => 17,
+        'title' => 'Microsoft Azure Data Fundamentals DP-900 Exam...',
+        'org' => 'Microsoft',
+        'org_icon_html' => '<svg width="12" height="12" viewBox="0 0 20 20" class="ts-svg-icon" aria-hidden="true"><rect x="1" y="1" width="8" height="8" fill="#F25022"/><rect x="11" y="1" width="8" height="8" fill="#7FBA00"/><rect x="1" y="11" width="8" height="8" fill="#00A4EF"/><rect x="11" y="11" width="8" height="8" fill="#FFB900"/></svg>',
+        'tag' => 'AZURE',
+        'type' => 'Specialization',
+        'rating' => '4.6',
+        'image' => 'assets/img/courses/course-17.jpg'
+      ]
+    ]
+  ],
+  'healthcare' => [
+    'title' => 'Healthcare',
+    'query' => 'Healthcare',
+    'cards' => [
+      [
+        'course_id' => 18,
+        'title' => 'Google AI for Healthcare Professionals',
+        'org' => 'Google',
+        'org_icon_html' => '<svg width="13" height="13" viewBox="0 0 24 24" class="ts-svg-icon" aria-hidden="true"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>',
+        'tag' => 'HEALTH AI',
+        'type' => 'Specialization',
+        'rating' => '4.7',
+        'image' => 'assets/img/courses/course-18.jpg'
+      ],
+      [
+        'course_id' => 16,
+        'title' => 'ACE Health Coach',
+        'org' => 'American Council on Exercise',
+        'org_icon_html' => '<span class="ts-org-tag ace-tag">➔</span>',
+        'tag' => 'ACE',
+        'type' => 'Professional Certificate',
+        'rating' => '4.4',
+        'image' => 'assets/img/courses/course-16.jpg'
+      ],
+      [
+        'course_id' => 1,
+        'title' => 'NASM Personal Fitness Trainer',
+        'org' => 'National Academy of Sports Medicine',
+        'org_icon_html' => '<span class="ts-org-tag nasm-tag">NASM</span>',
+        'tag' => 'FITNESS',
+        'type' => 'Professional Certificate',
+        'rating' => '4.7',
+        'image' => 'assets/img/courses/course-1.jpg'
+      ]
+    ]
+  ]
+];
+
 $pageTitle = 'Courses'; require __DIR__ . '/includes/header.php'; ?>
 <section class="hero">
   <span class="hero-badge">✦ Interactive E-Learning</span>
@@ -200,6 +312,44 @@ $pageTitle = 'Courses'; require __DIR__ . '/includes/header.php'; ?>
     </button>
   </div>
 </section>
+
+<!-- ===== Trending Searches Section ===== -->
+<section class="trending-searches-section" aria-label="Trending searches">
+  <h2 class="ts-heading">Trending searches</h2>
+  <div class="ts-grid">
+    <?php foreach ($trendingSearches as $groupKey => $group): ?>
+    <div class="ts-column">
+      <a href="#results" class="ts-col-header" onclick="document.getElementById('q').value='<?= e($group['query']) ?>'; document.getElementById('q').dispatchEvent(new Event('input'));">
+        <span class="ts-col-title"><?= e($group['title']) ?></span>
+        <span class="ts-arrow" aria-hidden="true">→</span>
+      </a>
+      <div class="ts-cards-list">
+        <?php foreach ($group['cards'] as $card): ?>
+        <a href="course.php?id=<?= (int)$card['course_id'] ?>" class="ts-card">
+          <div class="ts-thumb-box">
+            <img src="<?= e($card['image']) ?>" alt="<?= e($card['title']) ?>" class="ts-thumb-img" loading="lazy">
+            <span class="ts-thumb-tag"><?= e($card['tag']) ?></span>
+          </div>
+          <div class="ts-card-content">
+            <div class="ts-partner-row">
+              <span class="ts-partner-icon"><?= $card['org_icon_html'] ?></span>
+              <span class="ts-partner-name"><?= e($card['org']) ?></span>
+            </div>
+            <h3 class="ts-title" title="<?= e($card['title']) ?>"><?= e($card['title']) ?></h3>
+            <div class="ts-meta-row">
+              <span class="ts-cert"><?= e($card['type']) ?></span>
+              <span class="ts-dot">·</span>
+              <span class="ts-star">★ <?= e($card['rating']) ?></span>
+            </div>
+          </div>
+        </a>
+        <?php endforeach; ?>
+      </div>
+    </div>
+    <?php endforeach; ?>
+  </div>
+</section>
+
 <!-- ===== All Courses & Filters Section ===== -->
 <div class="courses-section-header">
   <h2 class="np-heading" style="margin-bottom:0;">Explore all courses</h2>
