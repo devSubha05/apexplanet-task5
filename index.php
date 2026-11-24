@@ -140,9 +140,23 @@ $trendingSearches = [
 
 $pageTitle = 'Courses'; require __DIR__ . '/includes/header.php'; ?>
 <section class="hero">
-  <span class="hero-badge">✦ Interactive E-Learning</span>
-  <h1>Learn <span class="hero-highlight">one lesson</span> at a time, and see your progress add up.</h1>
-  <p>Short courses on web development, databases and programming. Enroll, finish lessons, and track your percentage live.</p>
+  <div class="hero-content">
+    <span class="hero-badge">✦ Interactive E-Learning</span>
+    <h1>Learn <span class="hero-highlight">one lesson</span> at a time, and see your progress add up.</h1>
+    <p>Short courses on web development, databases and programming. Enroll, finish lessons, and track your percentage live.</p>
+  </div>
+  <div class="hero-media">
+    <div class="hero-image-card">
+      <img src="assets/img/hero-student.jpg" alt="Student learning on LearnLoop" class="hero-student-img" loading="eager">
+      <div class="hero-floating-pill">
+        <span class="floating-icon">🎓</span>
+        <div class="floating-text">
+          <strong>10,000+</strong>
+          <small>Active Learners</small>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- ===== New and Popular Section ===== -->
@@ -227,7 +241,7 @@ $pageTitle = 'Courses'; require __DIR__ . '/includes/header.php'; ?>
 <!-- ===== Three Coursera-Style Feature Cards ===== -->
 <section class="promo-banners-row" aria-label="Learning Pathways">
   <!-- Card 1: Launch a new career -->
-  <a href="#results" class="promo-banner-card" onclick="document.getElementById('level').value='Beginner'; document.getElementById('level').dispatchEvent(new Event('change'));">
+  <a href="javascript:void(0)" class="promo-banner-card" onclick="document.getElementById('level').value='Beginner'; document.getElementById('level').dispatchEvent(new Event('change')); const r = document.getElementById('results'); if(r) r.scrollIntoView({behavior:'smooth'});">
     <span class="promo-banner-text">Launch a new career</span>
     <div class="promo-banner-icon">
       <svg viewBox="0 0 80 60" width="70" height="52" fill="none">
@@ -319,7 +333,7 @@ $pageTitle = 'Courses'; require __DIR__ . '/includes/header.php'; ?>
   <div class="ts-grid">
     <?php foreach ($trendingSearches as $groupKey => $group): ?>
     <div class="ts-column">
-      <a href="#results" class="ts-col-header" onclick="document.getElementById('q').value='<?= e($group['query']) ?>'; document.getElementById('q').dispatchEvent(new Event('input'));">
+      <a href="javascript:void(0)" class="ts-col-header" onclick="document.getElementById('q').value='<?= e($group['query']) ?>'; document.getElementById('q').dispatchEvent(new Event('input')); const r = document.getElementById('results'); if(r) r.scrollIntoView({behavior:'smooth'});">
         <span class="ts-col-title"><?= e($group['title']) ?></span>
         <span class="ts-arrow" aria-hidden="true">→</span>
       </a>

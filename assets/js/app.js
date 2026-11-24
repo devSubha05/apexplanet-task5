@@ -1,4 +1,11 @@
 (function () {
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+  if (window.location.hash) {
+    history.replaceState(null, '', window.location.pathname + window.location.search);
+  }
+
   const q = document.getElementById('q'), cat = document.getElementById('cat'),
         level = document.getElementById('level'), out = document.getElementById('results'),
         count = document.getElementById('count'),
