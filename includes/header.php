@@ -20,6 +20,15 @@ if (window.location.hash) {
 <body>
 <header class="site-header">
   <a class="brand" href="<?= $base ?>index.php"><?= e(SITE_NAME) ?></a>
+
+  <form class="header-search-form" action="<?= $base ?>index.php" method="get" role="search">
+    <div class="header-search-inner">
+      <span class="header-search-icon" aria-hidden="true">🔍</span>
+      <input type="search" name="q" class="header-search-input" id="headerSearchInput" placeholder="Search for any course..." value="<?= e($_GET['q'] ?? '') ?>" aria-label="Search courses" autocomplete="off">
+      <button type="submit" class="header-search-btn" aria-label="Submit search">Search</button>
+    </div>
+  </form>
+
   <button class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="nav">Menu</button>
   <nav id="nav">
     <a href="<?= $base ?>index.php">Courses</a>

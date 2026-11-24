@@ -190,9 +190,41 @@
 
   // Read URL query params (from header search bar or category sub-strip)
   const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.has('q') && q) q.value = urlParams.get('q');
+  const headerSearchInput = document.getElementById('headerSearchInput');
+
+  if (urlParams.has('q')) {
+    const initialQ = urlParams.get('q');
+    if (q) q.value = initialQ;
+    if (headerSearchInput) headerSearchInput.value = initialQ;
+  }
   if (urlParams.has('cat') && cat) cat.value = urlParams.get('cat');
   if (urlParams.has('level') && level) level.value = urlParams.get('level');
+
+  // Synchronize header search bar with homepage courses filter
+  if (headerSearchInput && q) {
+    headerSearchInput.addEventListener('input', () => {
+      q.value = headerSearchInput.value;
+      clearTimeout(timer);
+      timer = setTimeout(load, 250);
+    });
+
+    q.addEventListener('input', () => {
+      headerSearchInput.value = q.value;
+    });
+
+    const headerForm = headerSearchInput.closest('form');
+    if (headerForm) {
+      headerForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        q.value = headerSearchInput.value;
+        load();
+        const target = document.getElementById('results');
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    }
+  }
 
   // Handle Explore categories chip clicks
   const chips = document.querySelectorAll('.cat-chip');
