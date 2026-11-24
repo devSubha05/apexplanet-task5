@@ -7,9 +7,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name'] ?? '');
     $email = strtolower(trim($_POST['email'] ?? ''));
     $pass = $_POST['password'] ?? '';
+    $confirmPass = $_POST['confirm_password'] ?? '';
     if (mb_strlen($name) < 2 || mb_strlen($name) > 80) $errors[] = 'Enter your name (2 to 80 characters).';
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = 'Enter a valid email address.';
     if (strlen($pass) < 8 || !preg_match('/[A-Za-z]/', $pass) || !preg_match('/\d/', $pass)) $errors[] = 'Password needs 8+ characters with a letter and a number.';
+    if ($pass !== $confirmPass) $errors[] = 'Passwords do not match.';
     if (!$errors) {
         $s = db()->prepare('SELECT id,is_verified FROM users WHERE email=?'); $s->execute([$email]); $ex = $s->fetch();
         if ($ex && $ex['is_verified']) {
@@ -36,7 +38,8 @@ $pageTitle = 'Create account'; require __DIR__ . '/includes/header.php'; ?>
     <?= csrf_field() ?>
     <label>Name <input name="name" value="<?= e($name) ?>" required maxlength="80" autocomplete="name"></label>
     <label>Email <input type="email" name="email" value="<?= e($email) ?>" required autocomplete="email"></label>
-    <label>Password <input type="password" name="password" required minlength="8" autocomplete="new-password"></label>
+    <label>Password <input type="password" name="password" id="password" required minlength="8" autocomplete="new-password"></label>
+    <label>Confirm password <input type="password" name="confirm_password" id="confirm_password" required minlength="8" autocomplete="new-password"></label>
     <small>8+ characters with at least one letter and one number. We email you a 6-digit code next.</small>
     <button class="btn" type="submit">Send verification code</button>
   </form>

@@ -138,6 +138,34 @@ $trendingSearches = [
   ]
 ];
 
+// --- Student Reviews Data ---
+$studentReviews = [
+  [
+    'quote' => 'When I was a child, I used to fear coding. But now, I am in love with building web apps and Python because of LearnLoop.',
+    'name' => 'ANJALI',
+    'location' => 'GURUGRAM, HARYANA',
+    'course' => 'Full-Stack Development',
+    'image' => 'assets/img/student-anjali.png',
+    'badge_theme' => 'sr-badge-orange',
+  ],
+  [
+    'quote' => 'The structured learning paths and hands-on projects helped me transition from non-tech into software engineering within 6 months.',
+    'name' => 'RAHUL SHARMA',
+    'location' => 'BENGALURU, KARNATAKA',
+    'course' => 'Python & Backend Systems',
+    'image' => 'assets/img/student-rahul.png',
+    'badge_theme' => 'sr-badge-teal',
+  ],
+  [
+    'quote' => 'Learning at my own pace with bite-sized, practical lessons made all the difference. Complex concepts finally made total sense.',
+    'name' => 'PRIYA PATEL',
+    'location' => 'MUMBAI, MAHARASHTRA',
+    'course' => 'Data Analytics & SQL',
+    'image' => 'assets/img/student-priya.png',
+    'badge_theme' => 'sr-badge-purple',
+  ],
+];
+
 $pageTitle = 'Courses'; require __DIR__ . '/includes/header.php'; ?>
 <section class="hero">
   <div class="hero-content">
@@ -360,6 +388,36 @@ $pageTitle = 'Courses'; require __DIR__ . '/includes/header.php'; ?>
         <?php endforeach; ?>
       </div>
     </div>
+    <?php endforeach; ?>
+  </div>
+</section>
+
+<!-- ===== Student Reviews Section ===== -->
+<section class="student-reviews-section" aria-label="Student reviews">
+  <div class="sr-header">
+    <span class="sr-badge">💬 Learner Stories</span>
+    <h2 class="ts-heading" style="margin-bottom:.35rem;">What our learners say</h2>
+    <p class="sr-subheading">Real stories from students transforming their careers and discovering their passions with LearnLoop.</p>
+  </div>
+  <div class="sr-grid">
+    <?php foreach ($studentReviews as $review): ?>
+    <article class="sr-card">
+      <div class="sr-quote-icon" aria-hidden="true">“</div>
+      <blockquote class="sr-quote-text">
+        “<?= e($review['quote']) ?>”
+      </blockquote>
+      <div class="sr-footer">
+        <div class="sr-student-meta">
+          <span class="sr-student-name"><?= e($review['name']) ?></span>
+          <span class="sr-student-location"><?= e($review['location']) ?></span>
+          <span class="sr-course-tag"><?= e($review['course']) ?></span>
+        </div>
+        <div class="sr-avatar-wrapper <?= e($review['badge_theme']) ?>">
+          <div class="sr-avatar-decor" aria-hidden="true"></div>
+          <img src="<?= e($review['image']) ?>" alt="<?= e($review['name']) ?>" class="sr-avatar-img" loading="lazy">
+        </div>
+      </div>
+    </article>
     <?php endforeach; ?>
   </div>
 </section>
