@@ -32,7 +32,7 @@ require __DIR__ . '/includes/header.php';
     <p class="lead" style="margin-bottom:0;">Track your learning progress and view your course invoices.</p>
   </div>
   <div>
-    <a href="index.php" class="btn btn-small">+ Explore More Courses</a>
+    <a href="courses.php" class="btn btn-small">+ Explore More Courses</a>
   </div>
 </div>
 
@@ -40,7 +40,7 @@ require __DIR__ . '/includes/header.php';
 <?php if (!$mine): ?>
   <div class="card" style="text-align:center; padding:3rem 1rem;">
     <p class="empty" style="font-size:1.15rem; margin-bottom:1.5rem;">You haven't enrolled in any paid courses yet.</p>
-    <a href="index.php" class="btn">Browse All Courses</a>
+    <a href="courses.php" class="btn">Browse All Courses</a>
   </div>
 <?php else: ?>
   <section class="grid">

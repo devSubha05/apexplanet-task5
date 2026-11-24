@@ -366,8 +366,11 @@ $pageTitle = 'Courses'; require __DIR__ . '/includes/header.php'; ?>
 
 <!-- ===== All Courses & Filters Section ===== -->
 <div class="courses-section-header">
-  <h2 class="np-heading" style="margin-bottom:0;">Explore all courses</h2>
-  <span id="count" class="courses-count-text" aria-live="polite"></span>
+  <div style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;">
+    <h2 class="np-heading" style="margin-bottom:0;">Explore all courses</h2>
+    <span id="count" class="courses-count-text" aria-live="polite"></span>
+  </div>
+  <a href="courses.php" class="btn btn-small" style="text-decoration:none;">Go to Courses Page →</a>
 </div>
 
 <section class="filters" aria-label="Find a course">

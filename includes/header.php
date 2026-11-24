@@ -21,7 +21,7 @@ if (window.location.hash) {
 <header class="site-header">
   <a class="brand" href="<?= $base ?>index.php"><?= e(SITE_NAME) ?></a>
 
-  <form class="header-search-form" action="<?= $base ?>index.php" method="get" role="search">
+  <form class="header-search-form" action="<?= $base ?>courses.php" method="get" role="search">
     <div class="header-search-inner">
       <span class="header-search-icon" aria-hidden="true">🔍</span>
       <input type="search" name="q" class="header-search-input" id="headerSearchInput" placeholder="Search for any course..." value="<?= e($_GET['q'] ?? '') ?>" aria-label="Search courses" autocomplete="off">
@@ -31,7 +31,7 @@ if (window.location.hash) {
 
   <button class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="nav">Menu</button>
   <nav id="nav">
-    <a href="<?= $base ?>index.php">Courses</a>
+    <a href="<?= $base ?>courses.php" <?= (basename($_SERVER['SCRIPT_NAME'] ?? '') === 'courses.php') ? 'class="active-nav-link"' : '' ?>>Courses</a>
     <?php if ($me): ?>
       <a href="<?= $base ?>dashboard.php">My learning</a>
       <?php if ($me['role'] === 'admin'): ?><a href="<?= $base ?>admin/index.php">Admin</a><?php endif; ?>

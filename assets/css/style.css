@@ -19,8 +19,9 @@ main,.wrap{flex:1;width:100%;max-width:100%;margin:0;padding:calc(80px + 1.8rem)
 .header-search-btn:hover{background:#e5a823;transform:scale(1.02)}
 .header-search-btn:active{transform:scale(0.98)}
 .site-header nav{display:flex;flex-wrap:wrap;align-items:center;gap:1rem}
-.site-header nav a{color:#fff;text-decoration:none;font-weight:600}
-.site-header nav a:hover{text-decoration:underline}
+.site-header nav a{color:#fff;text-decoration:none;font-weight:600;transition:color .15s ease}
+.site-header nav a:hover{color:#ffffff}
+.site-header nav a.active-nav-link{color:var(--gold)!important;font-weight:700;border-bottom:2px solid var(--gold);padding-bottom:2px}
 .nav-user img{border-radius:50%;vertical-align:middle;margin-right:.4rem;object-fit:cover}
 .nav-toggle{display:none;background:none;border:2px solid #fff;color:#fff;padding:.3rem .8rem;border-radius:6px;font:inherit;cursor:pointer}
 .btn{display:inline-block;background:var(--teal);color:#fff;border:0;border-radius:8px;padding:.65rem 1.2rem;font:600 1rem inherit;font-family:inherit;text-decoration:none;cursor:pointer}
@@ -114,6 +115,12 @@ th{background:#eaf0f3}
   .site-header nav{display:none;width:100%;flex-direction:column;align-items:flex-start;padding:.5rem 0}
   .nav-open .site-header nav{display:flex}
 }
+/* ===== All Courses Page Header ===== */
+.courses-page-header{margin:0 0 1.5rem;animation:npFadeIn .5s ease both}
+.courses-page-badge{display:inline-flex;align-items:center;gap:.4rem;padding:.3rem .85rem;font-size:.82rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--teal-dark);background:rgba(14,107,99,0.1);border:1px solid rgba(14,107,99,0.22);border-radius:999px;margin-bottom:.6rem}
+.courses-page-title{font-size:clamp(1.8rem,4vw,2.4rem);font-weight:800;color:var(--ink);margin:0 0 .5rem;letter-spacing:-.02em}
+.courses-page-subtitle{max-width:65ch;color:var(--muted);font-size:1.05rem;line-height:1.6;margin:0 0 1rem}
+
 /* ===== New and Popular Section ===== */
 .new-popular-section{margin:0 0 2.5rem;animation:npFadeIn .6s ease both}
 .np-heading{font-size:1.5rem;font-weight:800;color:var(--ink);margin:0 0 1.2rem;letter-spacing:-.02em}

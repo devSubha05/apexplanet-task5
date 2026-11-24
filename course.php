@@ -3,7 +3,7 @@ require_once __DIR__ . '/includes/functions.php';
 $id = (int)($_GET['id'] ?? 0);
 $s = db()->prepare('SELECT c.*, cat.name AS category FROM courses c JOIN categories cat ON cat.id=c.category_id WHERE c.id=?');
 $s->execute([$id]); $course = $s->fetch();
-if (!$course) { http_response_code(404); $pageTitle = 'Not found'; require __DIR__ . '/includes/header.php'; echo '<p class="empty">That course does not exist. <a href="index.php">Browse courses</a></p>'; require __DIR__ . '/includes/footer.php'; exit; }
+if (!$course) { http_response_code(404); $pageTitle = 'Not found'; require __DIR__ . '/includes/header.php'; echo '<p class="empty">That course does not exist. <a href="courses.php">Browse courses</a></p>'; require __DIR__ . '/includes/footer.php'; exit; }
 $me = current_user();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

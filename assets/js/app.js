@@ -43,6 +43,12 @@
       return;
     }
 
+    if (!toggleWrap || out.dataset.expanded === 'true') {
+      allCards.forEach(c => c.classList.remove('is-hidden'));
+      if (toggleWrap) toggleWrap.style.display = 'none';
+      return;
+    }
+
     const limit = getTwoRowsLimit();
 
     if (allCards.length <= limit) {
@@ -215,12 +221,14 @@
     const headerForm = headerSearchInput.closest('form');
     if (headerForm) {
       headerForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        q.value = headerSearchInput.value;
-        load();
-        const target = document.getElementById('results');
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (window.location.pathname.endsWith('courses.php')) {
+          e.preventDefault();
+          q.value = headerSearchInput.value;
+          load();
+          const target = document.getElementById('results');
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
         }
       });
     }
@@ -255,6 +263,9 @@
       } else if (targetQuery && q) {
         if (cat) cat.value = '0';
         q.value = targetQuery;
+      } else {
+        if (cat) cat.value = '0';
+        if (q) q.value = '';
       }
 
       load();
