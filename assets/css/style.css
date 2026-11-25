@@ -22,6 +22,7 @@ main,.wrap{flex:1;width:100%;max-width:100%;margin:0;padding:calc(80px + 1.8rem)
 .site-header nav a{color:#fff;text-decoration:none;font-weight:600;transition:color .15s ease}
 .site-header nav a:hover{color:#ffffff}
 .site-header nav a.active-nav-link{color:var(--gold)!important;font-weight:700;border-bottom:2px solid var(--gold);padding-bottom:2px}
+.site-header nav a.nav-logout{color:#ff3d3d!important;font-weight:700}
 .nav-user img{border-radius:50%;vertical-align:middle;margin-right:.4rem;object-fit:cover}
 .nav-toggle{display:none;background:none;border:2px solid #fff;color:#fff;padding:.3rem .8rem;border-radius:6px;font:inherit;cursor:pointer}
 .btn{display:inline-block;background:var(--teal);color:#fff;border:0;border-radius:8px;padding:.65rem 1.2rem;font:600 1rem inherit;font-family:inherit;text-decoration:none;cursor:pointer}

@@ -39,7 +39,7 @@ if (window.location.hash) {
       <?php endif; ?>
       <?php if ($me['role'] === 'admin'): ?><a href="<?= $base ?>admin/index.php">Admin</a><?php endif; ?>
       <a class="nav-user" href="<?= $base ?>profile.php"><img src="<?= $base . e(avatar_url($me)) ?>" alt="" width="28" height="28"><?= e($me['name']) ?></a>
-      <a href="<?= $base ?>logout.php">Log out</a>
+      <a class="nav-logout" href="<?= $base ?>logout.php" style="color:#ff5c5c;font-weight:700;">Log Out</a>
     <?php else: ?>
       <a href="<?= $base ?>login.php">Log in</a>
       <a class="btn btn-small" href="<?= $base ?>register.php">Create account</a>
