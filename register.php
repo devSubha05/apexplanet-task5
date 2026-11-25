@@ -6,6 +6,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
     $name = trim($_POST['name'] ?? '');
     $email = strtolower(trim($_POST['email'] ?? ''));
+    $role = in_array($_POST['role'] ?? '', ['student', 'instructor'], true) ? $_POST['role'] : 'student';
     $pass = $_POST['password'] ?? '';
     $confirmPass = $_POST['confirm_password'] ?? '';
     if (mb_strlen($name) < 2 || mb_strlen($name) > 80) $errors[] = 'Enter your name (2 to 80 characters).';
@@ -19,10 +20,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $hash = password_hash($pass, PASSWORD_DEFAULT);
             if ($ex) { 
-                db()->prepare('UPDATE users SET name=?, password=? WHERE id=?')->execute([$name, $hash, $ex['id']]);
+                db()->prepare('UPDATE users SET name=?, password=?, role=? WHERE id=?')->execute([$name, $hash, $role, $ex['id']]);
                 $uid = (int)$ex['id'];
             } else {
-                db()->prepare('INSERT INTO users (name,email,password) VALUES (?,?,?)')->execute([$name, $email, $hash]);
+                db()->prepare('INSERT INTO users (name,email,password,role) VALUES (?,?,?,?)')->execute([$name, $email, $hash, $role]);
                 $uid = (int)db()->lastInsertId();
             }
             issue_otp($uid, $email, $name);
@@ -36,6 +37,12 @@ $pageTitle = 'Create account'; require __DIR__ . '/includes/header.php'; ?>
   <?php foreach ($errors as $er): ?><div class="flash flash-error"><?= e($er) ?></div><?php endforeach; ?>
   <form method="post" id="regForm" novalidate>
     <?= csrf_field() ?>
+    <label>I want to
+      <select name="role">
+        <option value="student">Learn as a Student</option>
+        <option value="instructor">Teach as an Instructor / Educator</option>
+      </select>
+    </label>
     <label>Name <input name="name" value="<?= e($name) ?>" required maxlength="80" autocomplete="name"></label>
     <label>Email <input type="email" name="email" value="<?= e($email) ?>" required autocomplete="email"></label>
     <label>Password <input type="password" name="password" id="password" required minlength="8" autocomplete="new-password"></label>

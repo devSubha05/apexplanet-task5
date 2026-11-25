@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($redirectTo && !str_contains($redirectTo, '://') && !str_starts_with($redirectTo, '//')) {
                 redirect($redirectTo);
             }
-            redirect($u['role'] === 'admin' ? 'admin/index.php' : 'dashboard.php');
+            redirect($u['role'] === 'admin' ? 'admin/index.php' : ($u['role'] === 'instructor' ? 'instructor/index.php' : 'dashboard.php'));
         }
         $_SESSION['login_fails'] = ++$fails;
         if ($fails >= 5) { $_SESSION['login_lock'] = time() + 300; $_SESSION['login_fails'] = 0; }

@@ -6,7 +6,7 @@ CREATE TABLE users (
   name VARCHAR(80) NOT NULL,
   email VARCHAR(120) NOT NULL UNIQUE,
   password VARCHAR(255) NOT NULL,
-  role ENUM('student','admin') NOT NULL DEFAULT 'student',
+  role ENUM('student','instructor','admin') NOT NULL DEFAULT 'student',
   avatar VARCHAR(120) DEFAULT NULL,
   bio VARCHAR(300) DEFAULT NULL,
   is_verified TINYINT(1) NOT NULL DEFAULT 0,
@@ -33,6 +33,7 @@ CREATE TABLE courses (
   title VARCHAR(120) NOT NULL,
   description TEXT NOT NULL,
   category_id INT NOT NULL,
+  instructor_id INT NULL,
   level ENUM('Beginner','Intermediate','Advanced') NOT NULL DEFAULT 'Beginner',
   instructor VARCHAR(80) NOT NULL,
   duration_hours DECIMAL(4,1) NOT NULL DEFAULT 1.0,
@@ -44,6 +45,7 @@ CREATE TABLE courses (
   badge VARCHAR(30) DEFAULT 'Bestseller',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (category_id) REFERENCES categories(id),
+  FOREIGN KEY (instructor_id) REFERENCES users(id) ON DELETE SET NULL,
   FULLTEXT KEY ft_courses (title, description)
 ) ENGINE=InnoDB;
 
@@ -94,10 +96,67 @@ CREATE TABLE lesson_progress (
   FOREIGN KEY (lesson_id) REFERENCES lessons(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
+CREATE TABLE materials (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  course_id INT NOT NULL,
+  lesson_id INT NULL,
+  title VARCHAR(150) NOT NULL,
+  description TEXT NULL,
+  file_path VARCHAR(255) NOT NULL,
+  file_type VARCHAR(50) NOT NULL DEFAULT 'file',
+  file_size INT NOT NULL DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE,
+  FOREIGN KEY (lesson_id) REFERENCES lessons(id) ON DELETE SET NULL
+) ENGINE=InnoDB;
 
--- Seed: admin login  admin@learnloop.test / Admin@123
+CREATE TABLE assignments (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  course_id INT NOT NULL,
+  title VARCHAR(150) NOT NULL,
+  description TEXT NOT NULL,
+  type ENUM('assignment','exam') NOT NULL DEFAULT 'assignment',
+  max_score INT NOT NULL DEFAULT 100,
+  due_date DATETIME NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE assignment_submissions (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  assignment_id INT NOT NULL,
+  user_id INT NOT NULL,
+  submission_text TEXT NULL,
+  file_path VARCHAR(255) NULL,
+  score INT NULL,
+  feedback TEXT NULL,
+  status ENUM('submitted','graded') NOT NULL DEFAULT 'submitted',
+  submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  graded_at DATETIME NULL,
+  FOREIGN KEY (assignment_id) REFERENCES assignments(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  UNIQUE KEY uq_sub (assignment_id, user_id)
+) ENGINE=InnoDB;
+
+CREATE TABLE course_discussions (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  course_id INT NOT NULL,
+  user_id INT NOT NULL,
+  parent_id INT NULL,
+  title VARCHAR(180) NULL,
+  message TEXT NOT NULL,
+  is_pinned TINYINT(1) NOT NULL DEFAULT 0,
+  is_instructor_reply TINYINT(1) NOT NULL DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (parent_id) REFERENCES course_discussions(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- Seed: admin@learnloop.test / Admin@123  & instructor@learnloop.test / Instructor@123
 INSERT INTO users (name,email,password,role,is_verified) VALUES
-('Admin','admin@learnloop.test','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','admin',1);
+('Admin','admin@learnloop.test','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','admin',1),
+('Prof. Sarah Jenkins','instructor@learnloop.test','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','instructor',1);
 
 INSERT INTO categories (name) VALUES ('Web Development'),('Databases'),('Programming'),('Design'),('Data Science'),('Mobile Development'),('DevOps'),('Cybersecurity');
 

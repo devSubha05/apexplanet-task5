@@ -126,6 +126,15 @@ function require_login(): array {
     if (!$u) { flash('error', 'Log in to continue.'); redirect('login.php'); }
     return $u;
 }
+function require_instructor(): array {
+    $u = current_user();
+    if (!$u || !in_array($u['role'], ['instructor', 'admin'], true)) {
+        http_response_code(403);
+        flash('error', 'Instructor access required.');
+        redirect($u ? 'dashboard.php' : 'login.php');
+    }
+    return $u;
+}
 function require_admin(): array {
     $u = current_user();
     if (!$u || $u['role'] !== 'admin') { http_response_code(403); exit('Admins only.'); }

@@ -34,6 +34,9 @@ if (window.location.hash) {
     <a href="<?= $base ?>courses.php" <?= (basename($_SERVER['SCRIPT_NAME'] ?? '') === 'courses.php') ? 'class="active-nav-link"' : '' ?>>Courses</a>
     <?php if ($me): ?>
       <a href="<?= $base ?>dashboard.php">My learning</a>
+      <?php if ($me['role'] === 'instructor' || $me['role'] === 'admin'): ?>
+        <a href="<?= $base ?>instructor/index.php" style="color:var(--gold);font-weight:700;">Teacher Panel</a>
+      <?php endif; ?>
       <?php if ($me['role'] === 'admin'): ?><a href="<?= $base ?>admin/index.php">Admin</a><?php endif; ?>
       <a class="nav-user" href="<?= $base ?>profile.php"><img src="<?= $base . e(avatar_url($me)) ?>" alt="" width="28" height="28"><?= e($me['name']) ?></a>
       <a href="<?= $base ?>logout.php">Log out</a>
