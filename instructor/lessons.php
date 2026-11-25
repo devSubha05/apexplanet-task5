@@ -15,11 +15,12 @@ if ($isSuperAdmin) {
     $myCourses = $stmt->fetchAll();
 }
 
-$cid = (int)($_GET['cid'] ?? ($_GET['course_id'] ?? ($myCourses[0]['id'] ?? 0)));
+// Do NOT auto-select the first course; default to 0 if not provided
+$cid = (int)($_GET['cid'] ?? ($_GET['course_id'] ?? 0));
 
 // Verify ownership of selected course
 $selectedCourse = null;
-if ($cid) {
+if ($cid > 0) {
     if ($isSuperAdmin) {
         $s = $db->prepare('SELECT * FROM courses WHERE id=?');
         $s->execute([$cid]);
@@ -28,11 +29,9 @@ if ($cid) {
         $s->execute([$cid, $instrId, $me['name']]);
     }
     $selectedCourse = $s->fetch() ?: null;
-}
-
-if (!$selectedCourse && !empty($myCourses)) {
-    $cid = (int)$myCourses[0]['id'];
-    $selectedCourse = $myCourses[0];
+    if (!$selectedCourse) {
+        $cid = 0;
+    }
 }
 
 $edit = null;
@@ -109,6 +108,7 @@ require __DIR__ . '/nav.php';
     <form method="get" style="display:flex;align-items:center;gap:.6rem;">
       <label style="margin:0;font-weight:700;">Select Course:</label>
       <select name="cid" onchange="this.form.submit()" style="margin:0;width:auto;height:42px;">
+        <option value="0" <?= $cid === 0 ? 'selected' : '' ?>>-- Select a Course --</option>
         <?php foreach ($myCourses as $mc): ?>
           <option value="<?= (int)$mc['id'] ?>" <?= $mc['id'] == $cid ? 'selected' : '' ?>><?= e($mc['title']) ?></option>
         <?php endforeach; ?>
@@ -118,9 +118,21 @@ require __DIR__ . '/nav.php';
 </div>
 
 <?php if (!$selectedCourse): ?>
-  <div class="card" style="text-align:center;padding:3rem 1rem;">
-    <p class="empty" style="font-size:1.15rem;margin-bottom:1.2rem;">You haven't created any courses yet.</p>
-    <a href="course_form.php" class="btn">+ Create Course First</a>
+  <div class="card" style="text-align:center;padding:3.5rem 1.5rem;border-radius:14px;background:#ffffff;border:1.5px dashed #cbd5e1;">
+    <div style="font-size:3.4rem;margin-bottom:1rem;">🎬</div>
+    <h2 style="margin:0 0 .5rem;color:var(--ink);">Please Select a Course</h2>
+    <p style="color:var(--muted);max-width:55ch;margin:0 auto 1.8rem;font-size:1.05rem;line-height:1.6;">
+      Choose one of your courses from the dropdown above to manage its video lessons, text content, and syllabus structure.
+    </p>
+    <?php if (!empty($myCourses)): ?>
+      <div style="display:flex;justify-content:center;gap:.6rem;flex-wrap:wrap;max-width:700px;margin:0 auto;">
+        <?php foreach ($myCourses as $mc): ?>
+          <a href="lessons.php?cid=<?= (int)$mc['id'] ?>" class="btn btn-small" style="background:#f1f5f9;color:var(--ink);border:1px solid #cbd5e1;font-weight:600;">
+            <?= e($mc['title']) ?>
+          </a>
+        <?php endforeach; ?>
+      </div>
+    <?php endif; ?>
   </div>
 <?php else: ?>
 

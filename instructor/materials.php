@@ -15,10 +15,12 @@ if ($isSuperAdmin) {
     $myCourses = $stmt->fetchAll();
 }
 
-$cid = (int)($_GET['cid'] ?? ($myCourses[0]['id'] ?? 0));
+// Do NOT auto-select the first course; default to 0 if not provided
+$cid = (int)($_GET['cid'] ?? 0);
+$isAjax = isset($_GET['ajax']);
 
 $selectedCourse = null;
-if ($cid) {
+if ($cid > 0) {
     if ($isSuperAdmin) {
         $s = $db->prepare('SELECT * FROM courses WHERE id=?');
         $s->execute([$cid]);
@@ -27,18 +29,17 @@ if ($cid) {
         $s->execute([$cid, $instrId, $me['name']]);
     }
     $selectedCourse = $s->fetch() ?: null;
+    if (!$selectedCourse) {
+        $cid = 0;
+    }
 }
 
-if (!$selectedCourse && !empty($myCourses)) {
-    $cid = (int)$myCourses[0]['id'];
-    $selectedCourse = $myCourses[0];
-}
-
-// Handle Study Material Upload / Delete
+// Handle Form Submissions (Upload Material, Create Assignment, Grade Submission, Deletes)
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $selectedCourse) {
     csrf_check();
 
+    // 1. Delete study material
     if (isset($_POST['delete_material'])) {
         $matId = (int)$_POST['delete_material'];
         $stmt = $db->prepare('SELECT file_path FROM materials WHERE id=? AND course_id=?');
@@ -50,161 +51,260 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $selectedCourse) {
             $db->prepare('DELETE FROM materials WHERE id=?')->execute([$matId]);
             flash('success', 'Study material removed.');
         }
-        redirect("materials.php?cid=$cid");
+        redirect("materials.php?cid=$cid#tab-materials");
     }
 
-    $title = trim($_POST['title'] ?? '');
-    $desc = trim($_POST['description'] ?? '');
+    // 2. Upload study material
+    if (isset($_POST['upload_material'])) {
+        $title = trim($_POST['title'] ?? '');
+        $desc = trim($_POST['description'] ?? '');
 
-    if ($title === '') {
-        $errors[] = 'Please enter a title for the study material.';
-    }
-
-    if (empty($_FILES['material_file']['tmp_name'])) {
-        $errors[] = 'Please choose a document or study material file to upload.';
-    } else {
-        $file = $_FILES['material_file'];
-        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        $allowed = ['pdf', 'zip', 'doc', 'docx', 'ppt', 'pptx', 'txt', 'csv', 'py', 'js', 'html', 'css', 'sql'];
-
-        if (!in_array($ext, $allowed, true)) {
-            $errors[] = 'File format not supported. Allowed: PDF, Word, PowerPoint, ZIP, Code and Text files.';
-        } elseif ($file['size'] > 25 * 1024 * 1024) {
-            $errors[] = 'File exceeds maximum size limit (25MB).';
+        if ($title === '') {
+            $errors[] = 'Please enter a title for the study material.';
+        } elseif (empty($_FILES['material_file']['tmp_name'])) {
+            $errors[] = 'Please choose a document or study material file to upload.';
         } else {
-            $safeName = 'mat-' . $cid . '-' . time() . '-' . random_int(100, 999) . '.' . $ext;
-            $dest = __DIR__ . '/../uploads/materials/' . $safeName;
-            if (move_uploaded_file($file['tmp_name'], $dest)) {
-                $db->prepare('INSERT INTO materials (course_id, title, description, file_path, file_type, file_size) VALUES (?,?,?,?,?,?)')
-                   ->execute([$cid, $title, $desc ?: null, $safeName, $ext, (int)$file['size']]);
-                flash('success', 'Study material uploaded successfully.');
-                redirect("materials.php?cid=$cid");
+            $file = $_FILES['material_file'];
+            $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+            $allowed = ['pdf', 'zip', 'doc', 'docx', 'ppt', 'pptx', 'txt', 'csv', 'py', 'js', 'html', 'css', 'sql'];
+
+            if (!in_array($ext, $allowed, true)) {
+                $errors[] = 'File format not supported. Allowed: PDF, Word, PowerPoint, ZIP, Code and Text files.';
+            } elseif ($file['size'] > 25 * 1024 * 1024) {
+                $errors[] = 'File exceeds maximum size limit (25MB).';
             } else {
-                $errors[] = 'Could not save the uploaded file. Check folder permissions.';
+                $safeName = 'mat-' . $cid . '-' . time() . '-' . random_int(100, 999) . '.' . $ext;
+                $dest = __DIR__ . '/../uploads/materials/' . $safeName;
+                if (move_uploaded_file($file['tmp_name'], $dest)) {
+                    $db->prepare('INSERT INTO materials (course_id, title, description, file_path, file_type, file_size) VALUES (?,?,?,?,?,?)')
+                       ->execute([$cid, $title, $desc ?: null, $safeName, $ext, (int)$file['size']]);
+                    flash('success', 'Study material uploaded successfully.');
+                    redirect("materials.php?cid=$cid#tab-materials");
+                } else {
+                    $errors[] = 'Could not save the uploaded file. Check folder permissions.';
+                }
             }
         }
     }
+
+    // 3. Create Assignment or Exam / Test
+    if (isset($_POST['create_assignment'])) {
+        $title = trim($_POST['title'] ?? '');
+        $desc = trim($_POST['description'] ?? '');
+        $type = in_array($_POST['type'] ?? '', ['assignment', 'exam'], true) ? $_POST['type'] : 'assignment';
+        $maxScore = max(1, (int)($_POST['max_score'] ?? 100));
+        $dueDate = !empty($_POST['due_date']) ? $_POST['due_date'] : null;
+
+        if ($title === '' || $desc === '') {
+            $errors[] = 'Task title and instructions are required.';
+        } else {
+            $stmt = $db->prepare('INSERT INTO assignments (course_id, title, description, type, max_score, due_date) VALUES (?,?,?,?,?,?)');
+            $stmt->execute([$cid, $title, $desc, $type, $maxScore, $dueDate]);
+            flash('success', ucfirst($type) . ' created successfully.');
+            redirect("materials.php?cid=$cid#tab-assignments");
+        }
+    }
+
+    // 4. Delete Assignment / Exam
+    if (isset($_POST['delete_assignment'])) {
+        $assignId = (int)$_POST['delete_assignment'];
+        $db->prepare('DELETE FROM assignments WHERE id=? AND course_id=?')->execute([$assignId, $cid]);
+        flash('success', 'Task removed.');
+        redirect("materials.php?cid=$cid#tab-assignments");
+    }
+
+    // 5. Grade student submission
+    if (isset($_POST['grade_submission'])) {
+        $subId = (int)$_POST['submission_id'];
+        $score = (int)$_POST['score'];
+        $feedback = trim($_POST['feedback'] ?? '');
+
+        $stmt = $db->prepare('UPDATE assignment_submissions SET score=?, feedback=?, status="graded", graded_at=NOW() WHERE id=?');
+        $stmt->execute([$score, $feedback, $subId]);
+        flash('success', 'Submission graded successfully.');
+        redirect("materials.php?cid=$cid#tab-submissions");
+    }
 }
 
+// Fetch Course Data if selected
 $materials = [];
+$assignments = [];
+$submissions = [];
+
 if ($selectedCourse) {
+    // 1. Materials
     $stmt = $db->prepare('SELECT * FROM materials WHERE course_id=? ORDER BY id DESC');
     $stmt->execute([$cid]);
     $materials = $stmt->fetchAll();
+
+    // 2. Assignments
+    $stmt = $db->prepare('SELECT a.*, 
+                                 (SELECT COUNT(*) FROM assignment_submissions s WHERE s.assignment_id=a.id) AS submission_count,
+                                 (SELECT COUNT(*) FROM assignment_submissions s WHERE s.assignment_id=a.id AND s.status="submitted") AS pending_count
+                          FROM assignments a 
+                          WHERE a.course_id=? 
+                          ORDER BY a.id DESC');
+    $stmt->execute([$cid]);
+    $assignments = $stmt->fetchAll();
+
+    // 3. Submissions
+    $stmt = $db->prepare('SELECT s.*, u.name AS student_name, u.email AS student_email,
+                                 a.title AS assignment_title, a.type AS assignment_type, a.max_score
+                          FROM assignment_submissions s
+                          JOIN users u ON u.id = s.user_id
+                          JOIN assignments a ON a.id = s.assignment_id
+                          WHERE a.course_id=?
+                          ORDER BY (s.status="submitted") DESC, s.submitted_at DESC');
+    $stmt->execute([$cid]);
+    $submissions = $stmt->fetchAll();
 }
 
-$pageTitle = 'Upload Study Materials · Instructor Panel';
+// If this is an AJAX fetch, render only the workspace partial and exit
+if ($isAjax) {
+    require __DIR__ . '/materials_partial.php';
+    exit;
+}
+
+$pageTitle = 'Study Materials & Assignments · Instructor Panel';
 require __DIR__ . '/../includes/header.php';
 require __DIR__ . '/nav.php';
 ?>
 
-<div class="bar" style="margin-bottom:1.5rem;">
+<div class="bar" style="margin-bottom:1.5rem;align-items:center;">
   <div>
-    <h1 style="margin:0 0 .3rem;">Study Materials &amp; Resources</h1>
-    <p style="margin:0;color:var(--muted);">Upload downloadable lecture notes, cheat sheets, slide decks, and project templates for your students.</p>
+    <h1 style="margin:0 0 .3rem;">Study Materials &amp; Assignments</h1>
+    <p style="margin:0;color:var(--muted);font-size:1rem;">
+      Upload study materials, set assignments or exams, and evaluate student work without page reloads.
+    </p>
   </div>
+
   <?php if (!empty($myCourses)): ?>
-    <form method="get" style="display:flex;align-items:center;gap:.6rem;">
-      <label style="margin:0;font-weight:700;">Select Course:</label>
-      <select name="cid" onchange="this.form.submit()" style="margin:0;width:auto;height:42px;">
+    <div style="display:flex;align-items:center;gap:.6rem;">
+      <label for="cidSelect" style="margin:0;font-weight:700;">Select Course:</label>
+      <select name="cid" id="cidSelect" style="margin:0;width:auto;min-width:260px;height:42px;">
+        <option value="0" <?= $cid === 0 ? 'selected' : '' ?>>-- Select a Course --</option>
         <?php foreach ($myCourses as $mc): ?>
           <option value="<?= (int)$mc['id'] ?>" <?= $mc['id'] == $cid ? 'selected' : '' ?>><?= e($mc['title']) ?></option>
         <?php endforeach; ?>
       </select>
-    </form>
+    </div>
   <?php endif; ?>
 </div>
 
 <?php foreach ($errors as $er): ?><div class="flash flash-error"><?= e($er) ?></div><?php endforeach; ?>
 
-<?php if (!$selectedCourse): ?>
-  <div class="card" style="text-align:center;padding:3rem 1rem;">
-    <p class="empty" style="font-size:1.15rem;margin-bottom:1.2rem;">You haven't created any courses yet.</p>
-    <a href="course_form.php" class="btn">+ Create Course First</a>
-  </div>
-<?php else: ?>
+<!-- Dynamic Course Workspace Container (Seamlessly updated without full reload) -->
+<div id="courseWorkspace" style="transition:opacity .2s ease;">
+  <?php require __DIR__ . '/materials_partial.php'; ?>
+</div>
 
-  <div style="background:#f0faf7;border:1px solid #bce6dc;border-radius:10px;padding:.8rem 1.2rem;margin-bottom:1.6rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.8rem;">
-    <div>
-      <span style="font-size:.78rem;font-weight:700;color:var(--teal);text-transform:uppercase;">Selected Course</span>
-      <h3 style="margin:0;color:var(--ink);"><?= e($selectedCourse['title']) ?></h3>
-    </div>
-    <div style="display:flex;gap:.5rem;">
-      <a href="lessons.php?cid=<?= $cid ?>" class="btn btn-small">Curriculum</a>
-      <a href="assignments.php?cid=<?= $cid ?>" class="btn btn-small" style="background:#7c3aed;">Assignments</a>
-    </div>
-  </div>
+<script>
+// Course Selector without page reload
+document.addEventListener('DOMContentLoaded', function () {
+  const cidSelect = document.getElementById('cidSelect');
+  const workspace = document.getElementById('courseWorkspace');
 
-  <div class="two-col" style="gap:1.6rem;align-items:start;">
-    
-    <!-- Left: Existing Materials List -->
-    <div>
-      <h2 style="margin:0 0 1rem;font-size:1.25rem;">Available Materials (<?= count($materials) ?>)</h2>
+  function initTabs() {
+    const tabBtns = document.querySelectorAll('.course-tab-btn');
+    const tabPanels = document.querySelectorAll('.course-tab-panel');
 
-      <?php if (empty($materials)): ?>
-        <div class="card" style="text-align:center;padding:2.5rem 1rem;">
-          <p class="empty">No materials uploaded for this course yet. Use the upload form to add resources.</p>
-        </div>
-      <?php endif; ?>
+    function switchTab(targetId) {
+      tabBtns.forEach(btn => {
+        const isTarget = (btn.dataset.tab === targetId);
+        btn.classList.toggle('active', isTarget);
+        if (isTarget) {
+          btn.style.color = 'var(--teal)';
+          btn.style.borderBottom = '3px solid var(--teal)';
+          btn.style.fontWeight = '700';
+        } else {
+          btn.style.color = 'var(--muted)';
+          btn.style.borderBottom = '3px solid transparent';
+          btn.style.fontWeight = '600';
+        }
+      });
 
-      <?php foreach ($materials as $m): ?>
-        <div class="card" style="margin-bottom:1rem;padding:1.2rem;border-left:4px solid #059669;">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;">
-            <div>
-              <div style="display:flex;align-items:center;gap:.5rem;">
-                <span style="font-size:1.3rem;">📄</span>
-                <strong style="font-size:1.05rem;color:var(--ink);"><?= e($m['title']) ?></strong>
-                <span class="tag" style="text-transform:uppercase;font-size:.72rem;background:#e6f4ea;padding:2px 6px;border-radius:4px;"><?= e($m['file_type']) ?></span>
-              </div>
-              <?php if (!empty($m['description'])): ?>
-                <p style="margin:.4rem 0 .5rem;color:#475569;font-size:.88rem;"><?= e($m['description']) ?></p>
-              <?php endif; ?>
-              <small style="color:var(--muted);display:block;margin-top:4px;">
-                Size: <?= round($m['file_size'] / 1024, 1) ?> KB · Uploaded: <?= date('M j, Y', strtotime($m['created_at'])) ?>
-              </small>
-            </div>
+      tabPanels.forEach(panel => {
+        panel.style.display = (panel.id === targetId) ? 'block' : 'none';
+      });
+    }
 
-            <div class="actions" style="flex-shrink:0;">
-              <a href="../uploads/materials/<?= e($m['file_path']) ?>" download class="btn btn-small" style="background:#059669;">Download</a>
-              <form method="post" onsubmit="return confirm('Delete this study resource?');" style="display:inline;">
-                <?= csrf_field() ?>
-                <input type="hidden" name="delete_material" value="<?= (int)$m['id'] ?>">
-                <button class="btn btn-small btn-danger" type="submit">Delete</button>
-              </form>
-            </div>
-          </div>
-        </div>
-      <?php endforeach; ?>
-    </div>
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = this.dataset.tab;
+        switchTab(target);
+        if (history.replaceState) {
+          const currentUrl = new URL(window.location.href);
+          currentUrl.hash = target;
+          history.replaceState(null, '', currentUrl.toString());
+        }
+      });
+    });
 
-    <!-- Right: Upload Form -->
-    <div class="card" style="padding:1.6rem;position:sticky;top:90px;">
-      <h2 style="margin:0 0 1.2rem;font-size:1.2rem;">+ Upload New Study Material</h2>
-      
-      <form method="post" enctype="multipart/form-data">
-        <?= csrf_field() ?>
+    // Check hash in URL or default to materials
+    if (window.location.hash) {
+      const h = window.location.hash.substring(1);
+      if (document.getElementById(h)) {
+        switchTab(h);
+        return;
+      }
+    }
+    switchTab('tab-materials');
+  }
 
-        <label>Document / Resource Title
-          <input name="title" placeholder="e.g. Complete JavaScript Cheat Sheet & Formulas" required maxlength="150">
-        </label>
+  // Handle Dropdown Change with AJAX fetch (No Full Page Reload!)
+  if (cidSelect && workspace) {
+    cidSelect.addEventListener('change', function () {
+      const selectedId = this.value;
+      const currentHash = window.location.hash || '';
 
-        <label>Brief Description (Optional)
-          <textarea name="description" rows="3" placeholder="Explain what students will find in this document..."></textarea>
-        </label>
+      if (selectedId === '0') {
+        history.pushState(null, '', 'materials.php' + currentHash);
+        workspace.style.opacity = '0.5';
+        fetch('materials.php?cid=0&ajax=1')
+          .then(r => r.text())
+          .then(html => {
+            workspace.innerHTML = html;
+            workspace.style.opacity = '1';
+            initTabs();
+          });
+        return;
+      }
 
-        <label>Select File
-          <input type="file" name="material_file" required accept=".pdf,.zip,.doc,.docx,.ppt,.pptx,.txt,.csv,.py,.js,.html,.css,.sql">
-          <small style="color:var(--muted);margin-top:4px;">Accepted formats: PDF, Word, PowerPoint, ZIP, source code (Max 25MB).</small>
-        </label>
+      // Update URL query string without reloading page
+      history.pushState(null, '', '?cid=' + encodeURIComponent(selectedId) + currentHash);
+      workspace.style.opacity = '0.5';
 
-        <div style="margin-top:1.4rem;">
-          <button class="btn" type="submit" style="background:#059669;width:100%;">Upload Study Material</button>
-        </div>
-      </form>
-    </div>
+      fetch('materials.php?cid=' + encodeURIComponent(selectedId) + '&ajax=1')
+        .then(r => r.text())
+        .then(html => {
+          workspace.innerHTML = html;
+          workspace.style.opacity = '1';
+          initTabs();
+        })
+        .catch(() => {
+          // Fallback if fetch fails
+          window.location.href = 'materials.php?cid=' + encodeURIComponent(selectedId) + currentHash;
+        });
+    });
 
-  </div>
+    window.addEventListener('popstate', function () {
+      const params = new URLSearchParams(window.location.search);
+      const urlCid = params.get('cid') || '0';
+      if (cidSelect) cidSelect.value = urlCid;
+      workspace.style.opacity = '0.5';
+      fetch('materials.php?cid=' + encodeURIComponent(urlCid) + '&ajax=1')
+        .then(r => r.text())
+        .then(html => {
+          workspace.innerHTML = html;
+          workspace.style.opacity = '1';
+          initTabs();
+        });
+    });
+  }
 
-<?php endif; ?>
+  initTabs();
+});
+</script>
 
 <?php require __DIR__ . '/../includes/footer.php'; ?>
