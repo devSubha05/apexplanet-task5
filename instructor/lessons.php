@@ -6,7 +6,6 @@ $db = db();
 $isSuperAdmin = ($me['role'] === 'admin');
 $instrId = (int)$me['id'];
 
-// Get all instructor's courses for selector
 if ($isSuperAdmin) {
     $myCourses = $db->query('SELECT id, title FROM courses ORDER BY id DESC')->fetchAll();
 } else {
@@ -15,10 +14,8 @@ if ($isSuperAdmin) {
     $myCourses = $stmt->fetchAll();
 }
 
-// Do NOT auto-select the first course; default to 0 if not provided
 $cid = (int)($_GET['cid'] ?? ($_GET['course_id'] ?? 0));
 
-// Verify ownership of selected course
 $selectedCourse = null;
 if ($cid > 0) {
     if ($isSuperAdmin) {
@@ -36,7 +33,6 @@ if ($cid > 0) {
 
 $edit = null;
 
-// Handle Lesson Add / Edit / Delete
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $selectedCourse) {
     csrf_check();
 
@@ -51,7 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $selectedCourse) {
         $videoUrl = trim($_POST['video_url'] ?? '');
         $pos = max(1, (int)($_POST['position'] ?? 1));
 
-        // Handle video file upload if provided
         if (!empty($_FILES['video_file']['tmp_name'])) {
             $vFile = $_FILES['video_file'];
             $vExt = strtolower(pathinfo($vFile['name'], PATHINFO_EXTENSION));
@@ -150,7 +145,6 @@ require __DIR__ . '/nav.php';
 
   <div class="two-col" style="gap:1.6rem;align-items:start;">
     
-    <!-- Left: Existing Lessons List -->
     <div>
       <h2 style="margin:0 0 1rem;font-size:1.25rem;">Curriculum Lessons (<?= count($lessons) ?>)</h2>
       
@@ -193,7 +187,6 @@ require __DIR__ . '/nav.php';
       <?php endforeach; ?>
     </div>
 
-    <!-- Right: Add / Edit Lesson Form -->
     <div class="card" style="padding:1.6rem;position:sticky;top:90px;">
       <h2 style="margin:0 0 1.2rem;font-size:1.2rem;"><?= $edit ? 'Edit Lesson #' . (int)$edit['position'] : '+ Add New Lesson' ?></h2>
       

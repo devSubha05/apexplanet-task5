@@ -2,7 +2,6 @@
 require_once __DIR__ . '/includes/functions.php';
 $me = require_login();
 
-// Fetch enrolled courses
 $s = db()->prepare('SELECT c.id,c.title,c.level,cat.name AS category,
   COALESCE(c.image, CONCAT("assets/img/courses/course-", c.id, ".jpg")) AS image
   FROM enrollments e 
@@ -13,7 +12,6 @@ $s = db()->prepare('SELECT c.id,c.title,c.level,cat.name AS category,
 $s->execute([$me['id']]);
 $mine = $s->fetchAll();
 
-// Fetch payment transactions
 $s = db()->prepare('SELECT p.*, c.title AS course_title 
   FROM payments p 
   JOIN courses c ON c.id=p.course_id 
@@ -60,7 +58,6 @@ require __DIR__ . '/includes/header.php';
   </section>
 <?php endif; ?>
 
-<!-- Payment & Invoices Section -->
 <h2 style="margin-top:3rem;">Purchase History &amp; Invoices</h2>
 <?php if (!$myPayments): ?>
   <p class="meta">No billing records found.</p>

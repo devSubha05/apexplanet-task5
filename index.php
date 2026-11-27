@@ -2,7 +2,6 @@
 require_once __DIR__ . '/includes/functions.php';
 $cats = db()->query('SELECT id,name FROM categories ORDER BY name')->fetchAll();
 
-// --- Fetch courses for "New and Popular" section ---
 $popularCourses = db()->query('SELECT c.id, c.title, c.level, c.price, c.original_price,
   COALESCE(c.image, CONCAT("assets/img/courses/course-", c.id, ".jpg")) AS image,
   cat.name AS category,
@@ -26,7 +25,6 @@ $trendingCourses = db()->query('SELECT c.id, c.title, c.level, c.price, c.origin
   WHERE cat.name IN ("Data Science","Cybersecurity","DevOps","Programming")
   ORDER BY c.id DESC LIMIT 3')->fetchAll();
 
-// --- Trending Searches Data (Python, Data Analytics, Healthcare) ---
 $trendingSearches = [
   'python' => [
     'title' => 'Python',
@@ -138,7 +136,6 @@ $trendingSearches = [
   ]
 ];
 
-// --- Student Reviews Data ---
 $studentReviews = [
   [
     'quote' => 'When I was a child, I used to fear coding. But now, I am in love with building web apps and Python because of LearnLoop.',
@@ -187,11 +184,9 @@ $pageTitle = 'Courses'; require __DIR__ . '/includes/header.php'; ?>
   </div>
 </section>
 
-<!-- ===== New and Popular Section ===== -->
 <section class="new-popular-section">
   <h2 class="np-heading">New and popular</h2>
   <div class="np-grid">
-    <!-- Column 1: Most Popular -->
     <div class="np-column">
       <div class="np-col-header">
         <span class="np-col-title">Most popular</span>
@@ -215,7 +210,6 @@ $pageTitle = 'Courses'; require __DIR__ . '/includes/header.php'; ?>
       <?php endforeach; ?>
     </div>
 
-    <!-- Column 2: Hot New Releases -->
     <div class="np-column">
       <div class="np-col-header">
         <span class="np-col-title">Hot new releases</span>
@@ -239,7 +233,6 @@ $pageTitle = 'Courses'; require __DIR__ . '/includes/header.php'; ?>
       <?php endforeach; ?>
     </div>
 
-    <!-- Column 3: Trending Courses -->
     <div class="np-column">
       <div class="np-col-header">
         <span class="np-col-title">Trending courses</span>
@@ -264,11 +257,8 @@ $pageTitle = 'Courses'; require __DIR__ . '/includes/header.php'; ?>
     </div>
   </div>
 </section>
-<!-- ===== End New and Popular ===== -->
 
-<!-- ===== Three Coursera-Style Feature Cards ===== -->
 <section class="promo-banners-row" aria-label="Learning Pathways">
-  <!-- Card 1: Launch a new career -->
   <a href="javascript:void(0)" class="promo-banner-card" onclick="document.getElementById('level').value='Beginner'; document.getElementById('level').dispatchEvent(new Event('change')); const r = document.getElementById('results'); if(r) r.scrollIntoView({behavior:'smooth'});">
     <span class="promo-banner-text">Launch a new career</span>
     <div class="promo-banner-icon">
@@ -283,7 +273,6 @@ $pageTitle = 'Courses'; require __DIR__ . '/includes/header.php'; ?>
     </div>
   </a>
 
-  <!-- Card 2: Try LearnLoop for Business -->
   <a href="course.php?id=3" class="promo-banner-card">
     <span class="promo-banner-text">Try LearnLoop for Business</span>
     <div class="promo-banner-icon">
@@ -297,7 +286,6 @@ $pageTitle = 'Courses'; require __DIR__ . '/includes/header.php'; ?>
     </div>
   </a>
 
-  <!-- Card 3: Earn a degree -->
   <a href="dashboard.php" class="promo-banner-card">
     <span class="promo-banner-text">Earn a degree</span>
     <div class="promo-banner-icon">
@@ -312,7 +300,6 @@ $pageTitle = 'Courses'; require __DIR__ . '/includes/header.php'; ?>
   </a>
 </section>
 
-<!-- ===== Explore Categories Section ===== -->
 <section class="explore-categories-section" aria-label="Explore Categories">
   <h2 class="explore-cat-heading">Explore categories</h2>
   <div class="explore-cat-chips-wrap">
@@ -355,7 +342,6 @@ $pageTitle = 'Courses'; require __DIR__ . '/includes/header.php'; ?>
   </div>
 </section>
 
-<!-- ===== Trending Searches Section ===== -->
 <section class="trending-searches-section" aria-label="Trending searches">
   <h2 class="ts-heading">Trending searches</h2>
   <div class="ts-grid">
@@ -392,7 +378,6 @@ $pageTitle = 'Courses'; require __DIR__ . '/includes/header.php'; ?>
   </div>
 </section>
 
-<!-- ===== Student Reviews Section ===== -->
 <section class="student-reviews-section" aria-label="Student reviews">
   <div class="sr-header">
     <span class="sr-badge">💬 Learner Stories</span>
@@ -422,7 +407,6 @@ $pageTitle = 'Courses'; require __DIR__ . '/includes/header.php'; ?>
   </div>
 </section>
 
-<!-- ===== All Courses & Filters Section ===== -->
 <div class="courses-section-header">
   <div style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;">
     <h2 class="np-heading" style="margin-bottom:0;">Explore all courses</h2>

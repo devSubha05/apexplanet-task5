@@ -6,12 +6,10 @@ $db = db();
 $isSuperAdmin = ($me['role'] === 'admin');
 $instrId = (int)$me['id'];
 
-// Handle course deletion
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
     csrf_check();
     $delId = (int)$_POST['delete'];
     
-    // Check ownership
     if ($isSuperAdmin) {
         $db->prepare('DELETE FROM courses WHERE id=?')->execute([$delId]);
         flash('success', 'Course deleted successfully.');
@@ -27,7 +25,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
     redirect('courses.php');
 }
 
-// Fetch courses
 if ($isSuperAdmin) {
     $rows = $db->query('SELECT c.id, c.title, c.level, c.price, c.original_price, c.instructor, cat.name AS category,
                                (SELECT COUNT(*) FROM lessons l WHERE l.course_id=c.id) AS lessons,

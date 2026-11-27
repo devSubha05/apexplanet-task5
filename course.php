@@ -15,7 +15,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         redirect("course.php?id=$id");
     }
 
-    // Student Assignment Submission
     if (isset($_POST['submit_assignment'])) {
         $assignId = (int)$_POST['assignment_id'];
         $subText = trim($_POST['submission_text'] ?? '');
@@ -42,7 +41,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         redirect("course.php?id=$id#tab-assignments");
     }
 
-    // Student Post Question to Teacher
     if (isset($_POST['ask_question'])) {
         $qTitle = trim($_POST['question_title'] ?? '');
         $qMsg = trim($_POST['question_message'] ?? '');
@@ -76,12 +74,10 @@ $origPrice = (float)$course['original_price'];
 $discountPct = $origPrice > $price ? round((($origPrice - $price) / $origPrice) * 100) : 0;
 $isTeacher = $me && ($me['role'] === 'admin' || (int)($course['instructor_id'] ?? 0) === (int)$me['id'] || $me['name'] === $course['instructor']);
 
-// Fetch Study Materials
 $materials = db()->prepare('SELECT * FROM materials WHERE course_id=? ORDER BY id DESC');
 $materials->execute([$id]);
 $materials = $materials->fetchAll();
 
-// Fetch Assignments & Student Submissions
 $assignments = db()->prepare('SELECT a.*, s.status AS sub_status, s.score, s.feedback, s.submitted_at, s.submission_text, s.file_path AS sub_file
                               FROM assignments a
                               LEFT JOIN assignment_submissions s ON s.assignment_id=a.id AND s.user_id=?
@@ -90,7 +86,6 @@ $assignments = db()->prepare('SELECT a.*, s.status AS sub_status, s.score, s.fee
 $assignments->execute([$me ? (int)$me['id'] : 0, $id]);
 $assignments = $assignments->fetchAll();
 
-// Fetch Q&A Discussions
 $discussions = db()->prepare('SELECT d.*, u.name AS author_name, u.role AS author_role, u.avatar AS author_avatar
                               FROM course_discussions d
                               JOIN users u ON u.id = d.user_id
@@ -135,7 +130,6 @@ $pageTitle = $course['title']; require __DIR__ . '/includes/header.php'; ?>
   </div>
 
   <?php if (!$enrolled): ?>
-    <!-- Premium Paid Course Purchase Box -->
     <div class="course-purchase-box">
       <div class="cpb-price-col">
         <div class="cpb-price-tag">
@@ -168,7 +162,6 @@ $pageTitle = $course['title']; require __DIR__ . '/includes/header.php'; ?>
       </div>
     </div>
   <?php else: ?>
-    <!-- Enrolled User Progress Bar & Receipt Link -->
     <div class="course-enrolled-banner">
       <div class="progress" role="progressbar" aria-valuenow="<?= $prog['pct'] ?>" aria-valuemin="0" aria-valuemax="100">
         <span id="bar" style="width:<?= $prog['pct'] ?>%"></span>
@@ -186,7 +179,6 @@ $pageTitle = $course['title']; require __DIR__ . '/includes/header.php'; ?>
     </div>
   <?php endif; ?>
 
-  <!-- Course Interaction Navigation Tabs -->
   <div class="course-nav-tabs" role="tablist" style="display:flex;gap:.5rem;margin:2rem 0 1.5rem;border-bottom:2px solid var(--line);overflow-x:auto;padding-bottom:.4rem;">
     <button type="button" class="course-tab-btn active" data-tab="tab-curriculum">🎬 Lessons (<?= count($lessons) ?>)</button>
     <button type="button" class="course-tab-btn" data-tab="tab-materials">📁 Study Materials (<?= count($materials) ?>)</button>
@@ -199,7 +191,6 @@ $pageTitle = $course['title']; require __DIR__ . '/includes/header.php'; ?>
     <?php endif; ?>
   </div>
 
-  <!-- TAB 1: CURRICULUM -->
   <div id="tab-curriculum" class="course-tab-panel active">
     <h2 style="margin:0 0 1rem;font-size:1.3rem;">Course Curriculum (<?= count($lessons) ?> Lessons)</h2>
     <?php if (!$lessons): ?><p class="empty">Lessons are coming soon.</p><?php endif; ?>
@@ -244,7 +235,6 @@ $pageTitle = $course['title']; require __DIR__ . '/includes/header.php'; ?>
     <?php endif; ?>
   </div>
 
-  <!-- TAB 2: STUDY MATERIALS -->
   <div id="tab-materials" class="course-tab-panel" style="display:none;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem;flex-wrap:wrap;gap:.8rem;">
       <div>
@@ -291,7 +281,6 @@ $pageTitle = $course['title']; require __DIR__ . '/includes/header.php'; ?>
     <?php endif; ?>
   </div>
 
-  <!-- TAB 3: ASSIGNMENTS & EXAMS -->
   <div id="tab-assignments" class="course-tab-panel" style="display:none;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem;flex-wrap:wrap;gap:.8rem;">
       <div>
@@ -340,13 +329,11 @@ $pageTitle = $course['title']; require __DIR__ . '/includes/header.php'; ?>
               <?php endif; ?>
             </div>
 
-            <!-- Description / Instructions -->
             <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:1rem;margin-bottom:1.2rem;">
               <strong style="font-size:.82rem;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:.3rem;">Task Instructions:</strong>
               <div style="font-size:.92rem;color:#334155;line-height:1.55;"><?= nl2br(e($a['description'])) ?></div>
             </div>
 
-            <!-- Existing Submission / Feedback Display -->
             <?php if (!empty($a['sub_status'])): ?>
               <div style="background:#fdfcf9;border:1px solid #fae8c8;border-radius:8px;padding:1rem;margin-bottom:1rem;">
                 <div style="font-size:.85rem;color:var(--muted);margin-bottom:.4rem;">
@@ -368,7 +355,6 @@ $pageTitle = $course['title']; require __DIR__ . '/includes/header.php'; ?>
               </div>
             <?php endif; ?>
 
-            <!-- Student Submission Form -->
             <div style="background:#fbfcfc;border:1px solid #e5e7eb;border-radius:8px;padding:1.2rem;">
               <h4 style="margin:0 0 .8rem;font-size:.98rem;color:var(--ink);">
                 <?= !empty($a['sub_status']) ? 'Resubmit Your Work' : 'Submit Your Solution' ?>
@@ -398,7 +384,6 @@ $pageTitle = $course['title']; require __DIR__ . '/includes/header.php'; ?>
     <?php endif; ?>
   </div>
 
-  <!-- TAB 4: Q&A DISCUSSIONS -->
   <div id="tab-discussions" class="course-tab-panel" style="display:none;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem;flex-wrap:wrap;gap:.8rem;">
       <div>
@@ -410,7 +395,6 @@ $pageTitle = $course['title']; require __DIR__ . '/includes/header.php'; ?>
       <?php endif; ?>
     </div>
 
-    <!-- Ask Question Box (Enrolled or Logged In) -->
     <?php if ($me): ?>
       <div class="card" style="padding:1.4rem;margin-bottom:1.8rem;border:1.5px solid rgba(14,107,99,0.2);">
         <h3 style="margin:0 0 .8rem;font-size:1.1rem;color:var(--teal);">🙋 Ask the Instructor a Question</h3>
@@ -436,7 +420,6 @@ $pageTitle = $course['title']; require __DIR__ . '/includes/header.php'; ?>
       </div>
     <?php endif; ?>
 
-    <!-- Discussion Threads List -->
     <?php if (empty($discussions)): ?>
       <div class="card" style="text-align:center;padding:2.5rem 1rem;">
         <p class="empty">No questions posted yet. Be the first to ask the instructor!</p>
@@ -472,7 +455,6 @@ $pageTitle = $course['title']; require __DIR__ . '/includes/header.php'; ?>
           <?php endif; ?>
           <p style="margin:0 0 .8rem;color:#334155;line-height:1.5;font-size:.92rem;white-space:pre-wrap;"><?= e($t['message']) ?></p>
 
-          <!-- Replies -->
           <?php if (!empty($reps)): ?>
             <div style="margin:1rem 0 0 1rem;padding-left:1rem;border-left:2px solid #e2e8f0;display:flex;flex-direction:column;gap:.8rem;">
               <?php foreach ($reps as $rep): ?>
@@ -500,7 +482,6 @@ $pageTitle = $course['title']; require __DIR__ . '/includes/header.php'; ?>
 </article>
 
 <script>
-// Interactive Course Tabs Script
 document.addEventListener('DOMContentLoaded', function () {
   const tabBtns = document.querySelectorAll('.course-tab-btn');
   const tabPanels = document.querySelectorAll('.course-tab-panel');
@@ -533,8 +514,7 @@ document.addEventListener('DOMContentLoaded', function () {
       switchTab(this.dataset.tab);
     });
   });
-
-  // Switch tab if hash present in URL
+L
   if (window.location.hash) {
     const hashId = window.location.hash.substring(1);
     if (document.getElementById(hashId)) {

@@ -4,11 +4,9 @@ require_once __DIR__ . '/../includes/functions.php';
 $me = require_instructor();
 $db = db();
 
-// If admin, they can manage everything; if instructor, filter by their instructor_id or name
 $isSuperAdmin = ($me['role'] === 'admin');
 $instrId = (int)$me['id'];
 
-// Course IDs owned by this educator
 if ($isSuperAdmin) {
     $courseIds = $db->query('SELECT id FROM courses')->fetchAll(PDO::FETCH_COLUMN);
     $courseCount = count($courseIds);
@@ -21,7 +19,6 @@ if ($isSuperAdmin) {
 
 $cIdsList = !empty($courseIds) ? implode(',', array_map('intval', $courseIds)) : '0';
 
-// Analytics & Stats
 $totalStudents = (int)$db->query("SELECT COUNT(DISTINCT user_id) FROM enrollments WHERE course_id IN ($cIdsList)")->fetchColumn();
 $totalLessons = (int)$db->query("SELECT COUNT(*) FROM lessons WHERE course_id IN ($cIdsList)")->fetchColumn();
 $totalMaterials = (int)$db->query("SELECT COUNT(*) FROM materials WHERE course_id IN ($cIdsList)")->fetchColumn();
@@ -31,7 +28,6 @@ $pendingGrading = (int)$db->query("SELECT COUNT(*) FROM assignment_submissions s
                                    WHERE a.course_id IN ($cIdsList) AND sub.status='submitted'")->fetchColumn();
 $activeDiscussions = (int)$db->query("SELECT COUNT(*) FROM course_discussions WHERE course_id IN ($cIdsList) AND parent_id IS NULL")->fetchColumn();
 
-// Recent Submissions Needing Grading
 $recentSubmissions = $db->query("SELECT sub.id, sub.submitted_at, sub.status, sub.score,
                                         u.name AS student_name, u.email AS student_email,
                                         a.title AS assignment_title, a.max_score, a.type AS assignment_type,
@@ -43,7 +39,6 @@ $recentSubmissions = $db->query("SELECT sub.id, sub.submitted_at, sub.status, su
                                  WHERE a.course_id IN ($cIdsList) AND sub.status = 'submitted'
                                  ORDER BY sub.submitted_at DESC LIMIT 5")->fetchAll();
 
-// Recent Student Questions
 $recentQuestions = $db->query("SELECT d.id, d.title, d.message, d.created_at, d.course_id,
                                       u.name AS student_name, u.avatar AS student_avatar,
                                       c.title AS course_title,
@@ -73,7 +68,6 @@ require __DIR__ . '/nav.php';
   </div>
 </div>
 
-<!-- Stats Counter Grid -->
 <div class="stats" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1.2rem;margin-bottom:2rem;">
   <div class="card" style="padding:1.2rem;border-left:4px solid var(--teal);margin:0;">
     <span style="font-size:.82rem;font-weight:700;color:var(--muted);text-transform:uppercase;">My Courses</span>
@@ -106,10 +100,8 @@ require __DIR__ . '/nav.php';
   </div>
 </div>
 
-<!-- Two-Column Layout: Pending Submissions & Student Questions -->
 <div class="two-col" style="gap:1.5rem;align-items:start;">
   
-  <!-- Left Box: Assignments Needing Grading -->
   <div class="card" style="margin:0;padding:1.5rem;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem;padding-bottom:.6rem;border-bottom:1px solid var(--line);">
       <h2 style="margin:0;font-size:1.2rem;">📝 Submissions Needing Grading</h2>
@@ -138,7 +130,6 @@ require __DIR__ . '/nav.php';
     <?php endif; ?>
   </div>
 
-  <!-- Right Box: Recent Student Q&A -->
   <div class="card" style="margin:0;padding:1.5rem;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem;padding-bottom:.6rem;border-bottom:1px solid var(--line);">
       <h2 style="margin:0;font-size:1.2rem;">💬 Student Questions &amp; Interaction</h2>
@@ -175,7 +166,6 @@ require __DIR__ . '/nav.php';
 
 </div>
 
-<!-- Quick Teaching Tools Grid -->
 <h2 style="margin:2.5rem 0 1rem;font-size:1.35rem;">Teacher Quick Actions</h2>
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.2rem;margin-bottom:2rem;">
   <a href="courses.php" class="card" style="padding:1.3rem;text-decoration:none;color:inherit;border-radius:12px;border:1px solid var(--line);transition:transform .2s ease,box-shadow .2s ease;">

@@ -94,8 +94,7 @@
       const courseUrl = 'course.php?id=' + encodeURIComponent(c.id);
       const checkoutUrl = 'checkout.php?course_id=' + encodeURIComponent(c.id);
       const imgPath = c.image || ('assets/img/courses/course-' + c.id + '.jpg');
-
-      // 1. Thumbnail top banner
+r
       const thumb = el('div', 'udemy-thumb-wrap');
       const img = document.createElement('img');
       img.src = imgPath;
@@ -118,10 +117,8 @@
 
       thumb.append(img, premiumBadge, wishBtn);
 
-      // Clicking thumb navigates to course
       thumb.addEventListener('click', () => { window.location.href = courseUrl; });
 
-      // 2. Card Content Body
       const body = el('div', 'udemy-card-body');
 
       const titleLink = el('a', 'udemy-title-link');
@@ -131,7 +128,6 @@
 
       const instructor = el('p', 'udemy-card-instructor', (c.instructor && c.instructor !== 'Admin' ? c.instructor : (c.category + ' Academy')));
 
-      // Rating & Badges row
       const ratingRow = el('div', 'udemy-rating-row');
       const badgeText = c.badge || (Number(c.rating || 4.7) >= 4.8 ? 'Bestseller' : 'Highest Rated');
       const badgeCls = badgeText.toLowerCase().replace(/[^a-z0-9]/g, '-');
@@ -141,7 +137,6 @@
       const ratingsCount = el('span', 'udemy-ratings-count', Number(c.rating_count || 2400).toLocaleString('en-IN') + ' ratings');
       ratingRow.append(badge, courseType, stars, ratingsCount);
 
-      // Footer Pricing & Add to Cart button
       const footerRow = el('div', 'udemy-footer-row');
       const priceCol = el('div', 'udemy-price-col');
       const curPrice = el('div', 'udemy-price-current', '₹' + Number(c.price || 499).toFixed(2));
@@ -194,7 +189,6 @@
       });
   }
 
-  // Read URL query params (from header search bar or category sub-strip)
   const urlParams = new URLSearchParams(window.location.search);
   const headerSearchInput = document.getElementById('headerSearchInput');
 
@@ -206,7 +200,6 @@
   if (urlParams.has('cat') && cat) cat.value = urlParams.get('cat');
   if (urlParams.has('level') && level) level.value = urlParams.get('level');
 
-  // Synchronize header search bar with homepage courses filter
   if (headerSearchInput && q) {
     headerSearchInput.addEventListener('input', () => {
       q.value = headerSearchInput.value;
@@ -234,7 +227,6 @@
     }
   }
 
-  // Handle Explore categories chip clicks
   const chips = document.querySelectorAll('.cat-chip');
   chips.forEach(chip => {
     chip.addEventListener('click', () => {

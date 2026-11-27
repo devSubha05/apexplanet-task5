@@ -54,7 +54,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!is_numeric($price) || $price < 0) $errors[] = 'Price must be a valid number.';
     if (!is_numeric($origPrice) || $origPrice < 0) $errors[] = 'Original price must be a valid number.';
 
-    // Handle course cover image upload if provided
     if (!empty($_FILES['cover_image']['tmp_name'])) {
         $file = $_FILES['cover_image'];
         $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));

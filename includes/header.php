@@ -29,21 +29,67 @@ if (window.location.hash) {
     </div>
   </form>
 
-  <button class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="nav">Menu</button>
-  <nav id="nav">
-    <a href="<?= $base ?>courses.php" <?= (basename($_SERVER['SCRIPT_NAME'] ?? '') === 'courses.php') ? 'class="active-nav-link"' : '' ?>>Courses</a>
+  <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="nav">
+    <span class="hamburger-box" aria-hidden="true">
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+    </span>
+  </button>
+
+  <div class="nav-backdrop" id="navBackdrop"></div>
+
+  <nav id="nav" class="nav-drawer">
+    <div class="nav-drawer-header">
+      <span class="nav-drawer-title"><?= e(SITE_NAME) ?></span>
+      <button type="button" class="nav-close-btn" id="navClose" aria-label="Close menu">&times;</button>
+    </div>
+
     <?php if ($me): ?>
-      <a href="<?= $base ?>dashboard.php">My learning</a>
-      <?php if ($me['role'] === 'instructor' || $me['role'] === 'admin'): ?>
-        <a href="<?= $base ?>instructor/index.php" style="color:var(--gold);font-weight:700;">Teacher Panel</a>
-      <?php endif; ?>
-      <?php if ($me['role'] === 'admin'): ?><a href="<?= $base ?>admin/index.php">Admin</a><?php endif; ?>
-      <a class="nav-user" href="<?= $base ?>profile.php"><img src="<?= $base . e(avatar_url($me)) ?>" alt="" width="28" height="28"><?= e($me['name']) ?></a>
-      <a class="nav-logout" href="<?= $base ?>logout.php" style="color:#ff5c5c;font-weight:700;">Log Out</a>
+      <a href="<?= $base ?>dashboard.php" class="nav-drawer-highlight">
+        <span>⚡ Continue Learning</span>
+        <span class="drawer-arrow">→</span>
+      </a>
     <?php else: ?>
-      <a href="<?= $base ?>login.php">Log in</a>
-      <a class="btn btn-small" href="<?= $base ?>register.php">Create account</a>
+      <a href="<?= $base ?>courses.php" class="nav-drawer-highlight">
+        <span>✦ Explore All Courses</span>
+        <span class="drawer-arrow">→</span>
+      </a>
     <?php endif; ?>
+
+    <div class="nav-drawer-links">
+      <a href="<?= $base ?>courses.php" class="drawer-link <?= (basename($_SERVER['SCRIPT_NAME'] ?? '') === 'courses.php') ? 'active-nav-link' : '' ?>">
+        <span class="nav-icon">📚</span> Courses
+      </a>
+      <?php if ($me): ?>
+        <a href="<?= $base ?>dashboard.php" class="drawer-link">
+          <span class="nav-icon">📊</span> My learning
+        </a>
+        <?php if ($me['role'] === 'instructor' || $me['role'] === 'admin'): ?>
+          <a href="<?= $base ?>instructor/index.php" class="drawer-link" style="color:var(--gold);font-weight:700;">
+            <span class="nav-icon">👨‍🏫</span> Teacher Panel
+          </a>
+        <?php endif; ?>
+        <?php if ($me['role'] === 'admin'): ?>
+          <a href="<?= $base ?>admin/index.php" class="drawer-link">
+            <span class="nav-icon">⚙️</span> Admin
+          </a>
+        <?php endif; ?>
+        <a class="drawer-link nav-user" href="<?= $base ?>profile.php">
+          <img src="<?= $base . e(avatar_url($me)) ?>" alt="" width="28" height="28"> <?= e($me['name']) ?>
+        </a>
+        <a class="drawer-link nav-logout" href="<?= $base ?>logout.php" style="color:#ff5c5c;font-weight:700;">
+          <span class="nav-icon">🚪</span> Log Out
+        </a>
+      <?php else: ?>
+        <a href="<?= $base ?>login.php" class="drawer-link">
+          <span class="nav-icon">🔑</span> Log in
+        </a>
+        <a class="drawer-link nav-btn-register btn btn-small" href="<?= $base ?>register.php">
+          <span class="nav-icon">✨</span> Create account
+        </a>
+      <?php endif; ?>
+    </div>
   </nav>
 </header>
 <main class="wrap">

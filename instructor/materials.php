@@ -6,7 +6,6 @@ $db = db();
 $isSuperAdmin = ($me['role'] === 'admin');
 $instrId = (int)$me['id'];
 
-// Get instructor courses
 if ($isSuperAdmin) {
     $myCourses = $db->query('SELECT id, title FROM courses ORDER BY id DESC')->fetchAll();
 } else {
@@ -15,7 +14,6 @@ if ($isSuperAdmin) {
     $myCourses = $stmt->fetchAll();
 }
 
-// Do NOT auto-select the first course; default to 0 if not provided
 $cid = (int)($_GET['cid'] ?? 0);
 $isAjax = isset($_GET['ajax']);
 
@@ -34,12 +32,10 @@ if ($cid > 0) {
     }
 }
 
-// Handle Form Submissions (Upload Material, Create Assignment, Grade Submission, Deletes)
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $selectedCourse) {
     csrf_check();
 
-    // 1. Delete study material
     if (isset($_POST['delete_material'])) {
         $matId = (int)$_POST['delete_material'];
         $stmt = $db->prepare('SELECT file_path FROM materials WHERE id=? AND course_id=?');
@@ -54,7 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $selectedCourse) {
         redirect("materials.php?cid=$cid#tab-materials");
     }
 
-    // 2. Upload study material
     if (isset($_POST['upload_material'])) {
         $title = trim($_POST['title'] ?? '');
         $desc = trim($_POST['description'] ?? '');
@@ -87,7 +82,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $selectedCourse) {
         }
     }
 
-    // 3. Create Assignment or Exam / Test
     if (isset($_POST['create_assignment'])) {
         $title = trim($_POST['title'] ?? '');
         $desc = trim($_POST['description'] ?? '');
@@ -105,7 +99,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $selectedCourse) {
         }
     }
 
-    // 4. Delete Assignment / Exam
     if (isset($_POST['delete_assignment'])) {
         $assignId = (int)$_POST['delete_assignment'];
         $db->prepare('DELETE FROM assignments WHERE id=? AND course_id=?')->execute([$assignId, $cid]);
@@ -113,7 +106,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $selectedCourse) {
         redirect("materials.php?cid=$cid#tab-assignments");
     }
 
-    // 5. Grade student submission
     if (isset($_POST['grade_submission'])) {
         $subId = (int)$_POST['submission_id'];
         $score = (int)$_POST['score'];
@@ -126,18 +118,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $selectedCourse) {
     }
 }
 
-// Fetch Course Data if selected
 $materials = [];
 $assignments = [];
 $submissions = [];
 
 if ($selectedCourse) {
-    // 1. Materials
     $stmt = $db->prepare('SELECT * FROM materials WHERE course_id=? ORDER BY id DESC');
     $stmt->execute([$cid]);
     $materials = $stmt->fetchAll();
-
-    // 2. Assignments
     $stmt = $db->prepare('SELECT a.*, 
                                  (SELECT COUNT(*) FROM assignment_submissions s WHERE s.assignment_id=a.id) AS submission_count,
                                  (SELECT COUNT(*) FROM assignment_submissions s WHERE s.assignment_id=a.id AND s.status="submitted") AS pending_count
@@ -146,8 +134,6 @@ if ($selectedCourse) {
                           ORDER BY a.id DESC');
     $stmt->execute([$cid]);
     $assignments = $stmt->fetchAll();
-
-    // 3. Submissions
     $stmt = $db->prepare('SELECT s.*, u.name AS student_name, u.email AS student_email,
                                  a.title AS assignment_title, a.type AS assignment_type, a.max_score
                           FROM assignment_submissions s
@@ -159,7 +145,6 @@ if ($selectedCourse) {
     $submissions = $stmt->fetchAll();
 }
 
-// If this is an AJAX fetch, render only the workspace partial and exit
 if ($isAjax) {
     require __DIR__ . '/materials_partial.php';
     exit;
@@ -193,13 +178,11 @@ require __DIR__ . '/nav.php';
 
 <?php foreach ($errors as $er): ?><div class="flash flash-error"><?= e($er) ?></div><?php endforeach; ?>
 
-<!-- Dynamic Course Workspace Container (Seamlessly updated without full reload) -->
 <div id="courseWorkspace" style="transition:opacity .2s ease;">
   <?php require __DIR__ . '/materials_partial.php'; ?>
 </div>
 
 <script>
-// Course Selector without page reload
 document.addEventListener('DOMContentLoaded', function () {
   const cidSelect = document.getElementById('cidSelect');
   const workspace = document.getElementById('courseWorkspace');
@@ -241,7 +224,6 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
 
-    // Check hash in URL or default to materials
     if (window.location.hash) {
       const h = window.location.hash.substring(1);
       if (document.getElementById(h)) {
@@ -252,7 +234,6 @@ document.addEventListener('DOMContentLoaded', function () {
     switchTab('tab-materials');
   }
 
-  // Handle Dropdown Change with AJAX fetch (No Full Page Reload!)
   if (cidSelect && workspace) {
     cidSelect.addEventListener('change', function () {
       const selectedId = this.value;
@@ -271,7 +252,6 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
       }
 
-      // Update URL query string without reloading page
       history.pushState(null, '', '?cid=' + encodeURIComponent(selectedId) + currentHash);
       workspace.style.opacity = '0.5';
 
@@ -283,7 +263,7 @@ document.addEventListener('DOMContentLoaded', function () {
           initTabs();
         })
         .catch(() => {
-          // Fallback if fetch fails
+      
           window.location.href = 'materials.php?cid=' + encodeURIComponent(selectedId) + currentHash;
         });
     });

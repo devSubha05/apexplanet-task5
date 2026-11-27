@@ -6,7 +6,6 @@ $db = db();
 $isSuperAdmin = ($me['role'] === 'admin');
 $instrId = (int)$me['id'];
 
-// Get instructor courses
 if ($isSuperAdmin) {
     $myCourses = $db->query('SELECT id, title FROM courses ORDER BY id DESC')->fetchAll();
 } else {
@@ -19,12 +18,10 @@ $cIdsList = !empty($myCourses) ? implode(',', array_map('intval', array_column($
 $cid = (int)($_GET['cid'] ?? 0);
 $threadId = (int)($_GET['thread_id'] ?? 0);
 
-// Handle New Announcement / Reply / Pin / Delete
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
 
-    // 1. Post Instructor Reply
     if (isset($_POST['post_reply'])) {
         $parent = (int)$_POST['parent_id'];
         $courseId = (int)$_POST['course_id'];
@@ -40,7 +37,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // 2. Post Instructor Announcement / New Topic
     if (isset($_POST['post_topic'])) {
         $courseId = (int)($_POST['course_id'] ?? $cid);
         $title = trim($_POST['title'] ?? '');
@@ -57,7 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // 3. Delete Discussion
     if (isset($_POST['delete_discussion'])) {
         $delId = (int)$_POST['delete_discussion'];
         $db->prepare('DELETE FROM course_discussions WHERE id=?')->execute([$delId]);
@@ -66,7 +61,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Fetch questions / threads
 $query = "SELECT d.*, u.name AS author_name, u.role AS author_role, u.avatar AS author_avatar,
                  c.title AS course_title,
                  (SELECT COUNT(*) FROM course_discussions r WHERE r.parent_id=d.id) AS reply_count
@@ -90,7 +84,6 @@ $stmt = $db->prepare($query);
 $stmt->execute($params);
 $threads = $stmt->fetchAll();
 
-// Fetch replies for active threads
 $threadIds = array_column($threads, 'id');
 $repliesByParent = [];
 if (!empty($threadIds)) {
@@ -132,7 +125,6 @@ require __DIR__ . '/nav.php';
 
 <div class="two-col" style="gap:1.6rem;align-items:start;">
 
-  <!-- Left: Discussion Threads & Replies -->
   <div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
       <h2 style="margin:0;font-size:1.25rem;">Discussion Threads (<?= count($threads) ?>)</h2>
@@ -152,7 +144,6 @@ require __DIR__ . '/nav.php';
     ?>
       <div id="thread-<?= (int)$t['id'] ?>" class="card" style="margin-bottom:1.5rem;padding:1.4rem;border-left:4px solid <?= $t['is_pinned'] ? 'var(--gold)' : 'var(--teal)' ?>;">
         
-        <!-- Header -->
         <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:.8rem;margin-bottom:.8rem;">
           <div style="display:flex;align-items:center;gap:.7rem;">
             <div style="width:36px;height:36px;border-radius:50%;background:<?= $t['author_role'] === 'instructor' ? 'var(--gold);color:var(--ink)' : 'var(--teal);color:#fff' ?>;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.9rem;">
@@ -181,13 +172,11 @@ require __DIR__ . '/nav.php';
           </div>
         </div>
 
-        <!-- Topic Content -->
         <?php if (!empty($t['title'])): ?>
           <h3 style="margin:.3rem 0 .5rem;font-size:1.15rem;color:var(--ink);"><?= e($t['title']) ?></h3>
         <?php endif; ?>
         <p style="margin:0 0 1rem;color:#334155;line-height:1.55;font-size:.95rem;white-space:pre-wrap;"><?= e($t['message']) ?></p>
 
-        <!-- Nested Replies -->
         <?php if (!empty($reps)): ?>
           <div style="margin:1rem 0;padding-left:1rem;border-left:2px solid #e2e8f0;display:flex;flex-direction:column;gap:.8rem;">
             <?php foreach ($reps as $rep): ?>
@@ -207,7 +196,6 @@ require __DIR__ . '/nav.php';
           </div>
         <?php endif; ?>
 
-        <!-- Reply Box for Instructor -->
         <div style="margin-top:1rem;padding-top:.8rem;border-top:1px dashed #e2e8f0;">
           <form method="post" style="display:flex;gap:.6rem;align-items:flex-end;">
             <?= csrf_field() ?>
@@ -227,8 +215,7 @@ require __DIR__ . '/nav.php';
       </div>
     <?php endforeach; ?>
   </div>
-
-  <!-- Right: Post New Course Announcement -->
+  
   <div class="card" style="padding:1.6rem;position:sticky;top:90px;">
     <h2 style="margin:0 0 1.2rem;font-size:1.2rem;">📢 Post Teacher Announcement</h2>
 

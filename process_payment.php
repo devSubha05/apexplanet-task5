@@ -18,7 +18,6 @@ if (!$course) {
     redirect('index.php');
 }
 
-// Check if already enrolled
 $s = db()->prepare('SELECT 1 FROM enrollments WHERE user_id=? AND course_id=?');
 $s->execute([$me['id'], $courseId]);
 if ($s->fetchColumn()) {
@@ -26,7 +25,6 @@ if ($s->fetchColumn()) {
     redirect('course.php?id=' . $courseId);
 }
 
-// Calculate amounts
 $basePrice = (float)$course['price'];
 $origPrice = (float)$course['original_price'];
 $coupon = trim(strtoupper($_POST['applied_coupon'] ?? ''));
@@ -42,7 +40,6 @@ if ($coupon === 'APEX100' || $coupon === 'LEARN100' || $coupon === 'SPECIAL100')
 
 $finalAmount = max(0.0, $basePrice - $discountAmount);
 
-// Payment method details
 $method = trim($_POST['payment_method'] ?? 'UPI');
 if (!in_array($method, ['UPI', 'Card', 'NetBanking', 'Wallet'], true)) {
     $method = 'UPI';
@@ -72,7 +69,6 @@ if ($method === 'UPI') {
     $paymentDetails['channel'] = 'Digital Wallet';
 }
 
-// Generate Order ID & Transaction ID
 $orderNumber = 'ORD-' . date('Ymd') . '-' . strtoupper(bin2hex(random_bytes(3)));
 $txnId = 'TXN-' . strtoupper(bin2hex(random_bytes(6)));
 
@@ -80,7 +76,6 @@ try {
     $pdo = db();
     $pdo->beginTransaction();
 
-    // 1. Insert into payments table
     $stmt = $pdo->prepare('INSERT INTO payments 
       (order_number, user_id, course_id, amount, original_amount, discount_amount, payment_method, transaction_id, payment_status, card_last4, payment_details) 
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
@@ -99,7 +94,6 @@ try {
         json_encode($paymentDetails, JSON_UNESCAPED_UNICODE)
     ]);
 
-    // 2. Insert into enrollments table
     $pdo->prepare('INSERT IGNORE INTO enrollments (user_id, course_id) VALUES (?, ?)')
         ->execute([$me['id'], $courseId]);
 

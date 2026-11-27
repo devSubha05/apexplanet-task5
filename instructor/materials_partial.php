@@ -1,8 +1,4 @@
 <?php
-/**
- * Partial file rendered inside #courseWorkspace
- * Reusable for initial page load and seamless AJAX updates without page reload
- */
 ?>
 <?php if (!$selectedCourse): ?>
   <div class="card" style="text-align:center;padding:3.5rem 1.5rem;border-radius:14px;background:#ffffff;border:1.5px dashed #cbd5e1;">
@@ -24,7 +20,6 @@
 
 <?php else: ?>
 
-  <!-- Selected Course Action Header -->
   <div style="background:linear-gradient(135deg,#f0faf7 0%,#fdfbf7 100%);border:1px solid #bce6dc;border-radius:12px;padding:1rem 1.4rem;margin-bottom:1.6rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
     <div>
       <span style="font-size:.78rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.04em;">Selected Course</span>
@@ -36,7 +31,6 @@
     </div>
   </div>
 
-  <!-- Seamless Interactive Tab Buttons (NO PAGE RELOAD) -->
   <div class="course-tabs" style="display:flex;gap:.5rem;margin:1.2rem 0 1.6rem;border-bottom:2px solid var(--line);overflow-x:auto;padding-bottom:.4rem;">
     <button type="button" class="course-tab-btn active" data-tab="tab-materials" style="color:var(--teal);border-bottom:3px solid var(--teal);font-weight:700;">
       📁 Study Materials (<?= count($materials) ?>)
@@ -49,11 +43,9 @@
     </button>
   </div>
 
-  <!-- ================= TAB 1: STUDY MATERIALS ================= -->
   <div id="tab-materials" class="course-tab-panel active">
     <div class="two-col" style="gap:1.6rem;align-items:start;">
       
-      <!-- Materials List -->
       <div>
         <h2 style="margin:0 0 1rem;font-size:1.25rem;">Available Materials (<?= count($materials) ?>)</h2>
 
@@ -93,7 +85,6 @@
         <?php endforeach; ?>
       </div>
 
-      <!-- Upload Form -->
       <div class="card" style="padding:1.6rem;position:sticky;top:90px;">
         <h2 style="margin:0 0 1.2rem;font-size:1.2rem;">+ Upload New Study Material</h2>
         
@@ -123,11 +114,9 @@
     </div>
   </div>
 
-  <!-- ================= TAB 2: ASSIGNMENTS & TESTS ================= -->
   <div id="tab-assignments" class="course-tab-panel" style="display:none;">
     <div class="two-col" style="gap:1.6rem;align-items:start;">
       
-      <!-- Assignments List -->
       <div>
         <h2 style="margin:0 0 1rem;font-size:1.25rem;">Active Assignments &amp; Tests (<?= count($assignments) ?>)</h2>
 
@@ -174,7 +163,6 @@
         <?php endforeach; ?>
       </div>
 
-      <!-- Set New Assignment / Test Form -->
       <div class="card" style="padding:1.6rem;position:sticky;top:90px;">
         <h2 style="margin:0 0 1.2rem;font-size:1.2rem;">+ Set New Assignment or Test</h2>
 
@@ -216,7 +204,6 @@
     </div>
   </div>
 
-  <!-- ================= TAB 3: STUDENT SUBMISSIONS & GRADING ================= -->
   <div id="tab-submissions" class="course-tab-panel" style="display:none;">
     <h2 style="margin:0 0 .5rem;font-size:1.3rem;">📥 Student Submissions &amp; Grading Evaluation</h2>
     <p style="color:var(--muted);margin:0 0 1.5rem;">Review student submissions, evaluate code and answers, provide written feedback, and award points.</p>
@@ -253,7 +240,6 @@
           </div>
         </div>
 
-        <!-- Student Answer Text -->
         <?php if (!empty($sub['submission_text'])): ?>
           <div style="margin-bottom:1.2rem;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:1rem;">
             <strong style="font-size:.82rem;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:.4rem;">Student Response / Code Submission:</strong>
@@ -261,7 +247,6 @@
           </div>
         <?php endif; ?>
 
-        <!-- Student Attached File -->
         <?php if (!empty($sub['file_path'])): ?>
           <div style="margin-bottom:1.2rem;">
             <a href="../uploads/submissions/<?= e($sub['file_path']) ?>" download class="btn btn-small" style="background:#2563eb;">
@@ -270,7 +255,6 @@
           </div>
         <?php endif; ?>
 
-        <!-- Teacher Grading Form -->
         <div style="background:#fafafa;border:1px solid #e5e5e5;border-radius:10px;padding:1.2rem;margin-top:1rem;">
           <h4 style="margin:0 0 .8rem;font-size:1rem;color:var(--ink);">👨‍🏫 Teacher Evaluation &amp; Grading</h4>
           <form method="post" style="display:flex;flex-direction:column;gap:.8rem;">

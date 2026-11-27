@@ -39,7 +39,6 @@ require __DIR__ . '/includes/header.php';
 ?>
 
 <div class="receipt-container">
-  <!-- Celebration Top Header -->
   <div class="receipt-success-banner">
     <div class="success-icon-bubble">✓</div>
     <h1>Payment Successful!</h1>
@@ -57,7 +56,6 @@ require __DIR__ . '/includes/header.php';
     </div>
   </div>
 
-  <!-- Printable Tax Invoice / Receipt Card -->
   <div class="card invoice-card" id="printableInvoice">
     <div class="invoice-header">
       <div>
@@ -97,7 +95,6 @@ require __DIR__ . '/includes/header.php';
       </div>
     </div>
 
-    <!-- Items Table -->
     <div class="invoice-table-wrap">
       <table class="invoice-table">
         <thead>

@@ -5,7 +5,6 @@ $pageTitle = 'All Courses';
 require __DIR__ . '/includes/header.php';
 ?>
 
-<!-- ===== All Courses Page Header ===== -->
 <div class="courses-page-header">
   <div class="courses-page-badge">📚 Complete Course Catalog</div>
   <h1 class="courses-page-title">Explore All Courses</h1>
@@ -14,7 +13,6 @@ require __DIR__ . '/includes/header.php';
   </p>
 </div>
 
-<!-- ===== Quick Category Filter Strip ===== -->
 <section class="cat-strip" aria-label="Explore course categories" style="margin-top:0.5rem; margin-bottom:1.5rem;">
   <div class="cat-chips-list">
     <button type="button" class="cat-chip active" data-cat="">
@@ -41,7 +39,6 @@ require __DIR__ . '/includes/header.php';
   </div>
 </section>
 
-<!-- ===== Filter & Search Controls ===== -->
 <div class="courses-section-header">
   <h2 class="np-heading" style="margin-bottom:0;">Available Courses</h2>
   <span id="count" class="courses-count-text" aria-live="polite">Loading courses...</span>
@@ -61,7 +58,6 @@ require __DIR__ . '/includes/header.php';
   </select>
 </section>
 
-<!-- ===== Courses Grid (All Courses Loaded) ===== -->
 <section id="results" class="grid" data-expanded="true"></section>
 
 <div class="toggle-container" id="toggleWrap" style="display:none;">

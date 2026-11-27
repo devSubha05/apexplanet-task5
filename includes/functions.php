@@ -7,7 +7,6 @@ function db(): PDO {
         return $pdo;
     }
 
-    // Fast check if MySQL port 3306 is reachable without hanging
     $isPortOpen = function(string $host, int $port = 3306, float $timeout = 0.25): bool {
         $fp = @fsockopen($host, $port, $errno, $errstr, $timeout);
         if ($fp) {
@@ -22,7 +21,6 @@ function db(): PDO {
     $user = defined('DB_USER') ? DB_USER : 'root';
     $pass = defined('DB_PASS') ? DB_PASS : '';
 
-    // If port 3306 is not yet listening, trigger automatic background start
     if (!$isPortOpen($host, 3306, 0.25)) {
         $vbs = __DIR__ . '/start-mariadb.vbs';
         $bat = __DIR__ . '/start-mariadb.bat';
@@ -40,7 +38,6 @@ function db(): PDO {
             }
         }
 
-        // Poll up to 6 seconds for MariaDB to bind to port 3306
         for ($k = 0; $k < 20; $k++) {
             usleep(300000); // 0.3s
             if ($isPortOpen($host, 3306, 0.2)) {
@@ -49,7 +46,6 @@ function db(): PDO {
         }
     }
 
-    // Connect with PDO (with automatic retry while MariaDB completes startup)
     $lastException = null;
     for ($attempt = 1; $attempt <= 3; $attempt++) {
         try {
@@ -63,7 +59,7 @@ function db(): PDO {
         } catch (PDOException $e) {
             $lastException = $e;
             if ($attempt < 3 && (strpos($e->getMessage(), '2002') !== false || strpos($e->getMessage(), 'Connection refused') !== false)) {
-                usleep(500000); // 0.5s pause before retry
+                usleep(500000); 
             }
         }
     }
@@ -140,7 +136,7 @@ function require_admin(): array {
     if (!$u || $u['role'] !== 'admin') { http_response_code(403); exit('Admins only.'); }
     return $u;
 }
-//  Email OTP -
+
 function issue_otp(int $userId, string $email, string $name): void {
     $code = str_pad((string)random_int(0, 999999), 6, '0', STR_PAD_LEFT);
     db()->prepare('DELETE FROM otp_codes WHERE user_id=?')->execute([$userId]);

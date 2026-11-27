@@ -1,4 +1,5 @@
 :root{--ink:#14212b;--muted:#5a6b76;--bg:#f3f6f8;--panel:#fff;--teal:#0e6b63;--teal-dark:#0a4f49;--gold:#f2b632;--line:#d5dee3;--danger:#b3372b;--radius:10px}
+html,body{width:100%;max-width:100%;overflow-x:hidden}
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;display:flex;flex-direction:column;font:1rem/1.6 "Source Sans 3",system-ui,sans-serif;color:var(--ink);background:var(--bg)}
 h1,h2,h3,.brand{font-family:"Bricolage Grotesque",system-ui,sans-serif;line-height:1.2;margin:0 0 .6rem}
@@ -8,7 +9,6 @@ a{color:var(--teal)}
 main,.wrap{flex:1;width:100%;max-width:100%;margin:0;padding:calc(80px + 1.8rem) 4vw 3.5rem;box-sizing:border-box;background:linear-gradient(135deg,#ebf3f5 0%,#f8fafb 30%,#fcf7ed 70%,#edf5f4 100%);background-size:250% 250%;animation:mainBgShift 14s ease infinite,mainFadeIn 0.7s cubic-bezier(0.16,1,0.3,1) both}
 .site-header{position:fixed;top:0;left:0;right:0;width:100%;z-index:1000;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.8rem;padding:.7rem 4vw;background:var(--teal);color:#fff;min-height:80px;box-sizing:border-box;box-shadow:0 2px 12px rgba(14,107,99,0.25)}
 .brand{font-size:1.4rem;font-weight:800;color:#fff;text-decoration:none;flex-shrink:0}
-/* ===== Header Search Bar ===== */
 .header-search-form{flex:1;max-width:480px;min-width:180px;margin:0 .8rem}
 .header-search-inner{position:relative;display:flex;align-items:center;background:#ffffff;border-radius:999px;padding:.22rem .35rem .22rem .85rem;box-shadow:inset 0 1px 3px rgba(0,0,0,0.08),0 2px 8px rgba(0,0,0,0.06);transition:box-shadow .2s ease,border-color .2s ease;border:1.5px solid transparent}
 .header-search-inner:focus-within{border-color:var(--gold);box-shadow:0 0 0 3px rgba(242,182,50,0.35),0 4px 12px rgba(0,0,0,0.12)}
@@ -22,9 +22,18 @@ main,.wrap{flex:1;width:100%;max-width:100%;margin:0;padding:calc(80px + 1.8rem)
 .site-header nav a{color:#fff;text-decoration:none;font-weight:600;transition:color .15s ease}
 .site-header nav a:hover{color:#ffffff}
 .site-header nav a.active-nav-link{color:var(--gold)!important;font-weight:700;border-bottom:2px solid var(--gold);padding-bottom:2px}
-.site-header nav a.nav-logout{color:#ff3d3d!important;font-weight:700}
+.site-header nav a.nav-logout{color:#ff5c5c!important;font-weight:700}
+.site-header nav a.nav-logout:hover{color:#ffa39e!important}
 .nav-user img{border-radius:50%;vertical-align:middle;margin-right:.4rem;object-fit:cover}
-.nav-toggle{display:none;background:none;border:2px solid #fff;color:#fff;padding:.3rem .8rem;border-radius:6px;font:inherit;cursor:pointer}
+
+.nav-backdrop, .nav-drawer-header, .nav-drawer-highlight{display:none}
+.nav-drawer-links{display:contents}
+.nav-icon{display:none}
+
+.nav-toggle{display:none;background:none;border:none;cursor:pointer;padding:.45rem;border-radius:8px;line-height:1;outline:none;user-select:none}
+.hamburger-box{display:flex;flex-direction:column;gap:5px;width:24px;justify-content:center;align-items:center}
+.nav-toggle-bar{display:block;width:24px;height:2.6px;background:#ffffff;border-radius:3px;transition:all .25s ease}
+.nav-toggle:hover .nav-toggle-bar{background:var(--gold)}
 .btn{display:inline-block;background:var(--teal);color:#fff;border:0;border-radius:8px;padding:.65rem 1.2rem;font:600 1rem inherit;font-family:inherit;text-decoration:none;cursor:pointer}
 .btn:hover{background:var(--teal-dark);color:#fff}.btn:disabled{opacity:.6;cursor:wait}
 .site-header .btn{background:var(--gold);color:var(--ink)}
@@ -110,21 +119,171 @@ th{background:#eaf0f3}
 .site-footer{text-align:center;background:var(--teal);color:#fff;padding:1.5rem 4vw;font-size:.9rem}
 .site-footer a{color:#fff;text-decoration:underline}
 .site-footer a:hover{color:var(--gold)}
-@media (max-width:720px){
-  .site-header{padding:.6rem 1rem;gap:.5rem}
-  .header-search-form{order:3;width:100%;max-width:100%;margin:.3rem 0 .2rem}
-  .two-col{grid-template-columns:1fr}
-  .nav-toggle{display:block}
-  .site-header nav{display:none;width:100%;flex-direction:column;align-items:flex-start;padding:.5rem 0}
-  .nav-open .site-header nav{display:flex}
+
+.cat-strip{width:100%;margin-top:.5rem;margin-bottom:1.5rem}
+.cat-chips-list{display:flex;flex-wrap:wrap;gap:.6rem;width:100%}
+
+@media (max-width:768px){
+  html, body{width:100%!important;max-width:100%!important;overflow-x:hidden!important}
+  main,.wrap{width:100%!important;max-width:100%!important;padding:calc(105px + 1.2rem) 1.2rem 3rem!important;box-sizing:border-box!important;overflow-x:hidden!important}
+  .site-header{padding:.6rem 1.2rem!important;gap:.5rem!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;min-height:auto!important}
+  .brand{margin-right:auto!important}
+  .nav-toggle{display:flex!important;align-items:center;justify-content:center;margin-left:auto!important;z-index:1001}
+  .header-search-form{order:3!important;flex:1 1 100%!important;width:100%!important;max-width:100%!important;min-width:0!important;margin:.35rem 0 0!important}
+  .header-search-inner{width:100%!important;box-sizing:border-box!important}
+  .header-search-input{min-width:0!important;width:100%!important;flex:1!important}
+
+  .nav-backdrop{
+    display:block!important;position:fixed!important;inset:0!important;
+    background:rgba(10, 20, 28, 0.68)!important;
+    backdrop-filter:blur(6px)!important;-webkit-backdrop-filter:blur(6px)!important;
+    z-index:9998!important;opacity:0!important;visibility:hidden!important;
+    transition:opacity .3s ease, visibility .3s ease!important;pointer-events:none;
+  }
+  .nav-open .nav-backdrop{
+    opacity:1!important;visibility:visible!important;pointer-events:auto!important;
+  }
+
+  .site-header .nav-drawer{
+    position:fixed!important;top:0!important;right:0!important;bottom:0!important;
+    width:82%!important;max-width:320px!important;height:100vh!important;
+    background:linear-gradient(180deg, #0d2222 0%, #0d1a21 55%, #081217 100%)!important;
+    border-left:1px solid rgba(255, 255, 255, 0.12)!important;
+    box-shadow:-10px 0 35px rgba(0, 0, 0, 0.55)!important;
+    display:flex!important;flex-direction:column!important;
+    padding:1.4rem 1.3rem 2.5rem!important;box-sizing:border-box!important;
+    overflow-y:auto!important;z-index:9999!important;
+    transform:translateX(100%)!important;
+    transition:transform .32s cubic-bezier(0.16, 1, 0.3, 1)!important;
+    gap:0!important;
+  }
+  .nav-open .site-header .nav-drawer{
+    transform:translateX(0)!important;
+  }
+
+  .nav-drawer-header{
+    display:flex!important;align-items:center!important;justify-content:space-between!important;
+    padding-bottom:1.1rem!important;margin-bottom:1.2rem!important;
+    border-bottom:1px solid rgba(255, 255, 255, 0.12)!important;width:100%!important;
+  }
+  .nav-drawer-title{
+    font-family:"Bricolage Grotesque",sans-serif!important;font-size:1.2rem!important;
+    font-weight:800!important;color:#ffffff!important;letter-spacing:-.01em!important;
+  }
+  .nav-close-btn{
+    display:flex!important;align-items:center!important;justify-content:center!important;
+    width:36px!important;height:36px!important;border-radius:50%!important;
+    background:rgba(255, 255, 255, 0.12)!important;border:none!important;
+    color:#ffffff!important;font-size:1.6rem!important;line-height:1!important;
+    cursor:pointer!important;transition:background .2s ease, transform .2s ease!important;
+  }
+  .nav-close-btn:hover{background:rgba(255, 255, 255, 0.22)!important;transform:scale(1.08)!important}
+
+  .nav-drawer-highlight{
+    display:flex!important;align-items:center!important;justify-content:space-between!important;
+    padding:.85rem 1.15rem!important;margin-bottom:1.3rem!important;
+    background:linear-gradient(135deg, #ea580c 0%, #f97316 60%, #fb923c 100%)!important;
+    border-radius:12px!important;color:#ffffff!important;text-decoration:none!important;
+    font-size:.95rem!important;font-weight:800!important;
+    box-shadow:0 4px 16px rgba(234, 88, 12, 0.38)!important;
+    transition:transform .2s ease, box-shadow .2s ease!important;
+    width:100%!important;box-sizing:border-box!important;
+  }
+  .nav-drawer-highlight:hover{transform:translateY(-2px)!important;box-shadow:0 6px 20px rgba(234, 88, 12, 0.48)!important}
+  .nav-drawer-highlight .drawer-arrow{font-size:1.15rem!important;font-weight:800!important}
+
+  .nav-drawer-links{display:flex!important;flex-direction:column!important;gap:.4rem!important;width:100%!important}
+  .nav-icon{display:inline-flex!important;align-items:center!important;justify-content:center!important;font-size:1.15rem!important;width:24px!important;flex-shrink:0!important}
+  .drawer-link{
+    display:flex!important;align-items:center!important;gap:.85rem!important;
+    padding:.8rem .95rem!important;color:#f1f5f9!important;text-decoration:none!important;
+    font-size:1rem!important;font-weight:600!important;border-radius:10px!important;
+    transition:background .18s ease, color .18s ease, transform .15s ease!important;
+    width:100%!important;box-sizing:border-box!important;
+  }
+  .drawer-link:hover, .drawer-link:active{background:rgba(255, 255, 255, 0.1)!important;color:#ffffff!important;transform:translateX(3px)!important}
+  .drawer-link.active-nav-link{background:rgba(14, 107, 99, 0.45)!important;color:var(--gold)!important;border-bottom:none!important;font-weight:700!important}
+  .drawer-link.nav-logout{color:#ff5c5c!important}
+  .drawer-link.nav-logout:hover{background:rgba(255, 92, 92, 0.15)!important;color:#ff8080!important}
+  .drawer-link.nav-btn-register{background:var(--gold)!important;color:var(--ink)!important;font-weight:700!important;margin-top:.4rem!important}
+  .drawer-link.nav-btn-register:hover{background:#e5a823!important}
+
+  .hero{width:100%!important;max-width:100%!important;margin:.4rem 0 1.6rem!important;padding:1.5rem 1.2rem!important;box-sizing:border-box!important;flex-direction:column!important;gap:1.4rem!important}
+  .hero-content{width:100%!important;max-width:100%!important;box-sizing:border-box!important}
+  .hero h1{font-size:clamp(1.4rem, 5.5vw, 1.85rem)!important;max-width:100%!important;line-height:1.25!important}
+  .hero p{font-size:.98rem!important;max-width:100%!important;line-height:1.5!important}
+  .hero-media{width:100%!important;max-width:100%!important;margin:0 auto!important}
+  .hero-image-card{width:100%!important;max-width:100%!important;height:250px!important;margin:0 auto!important;box-sizing:border-box!important}
+
+  .new-popular-section{width:100%!important;max-width:100%!important;margin:0 0 2rem!important;box-sizing:border-box!important}
+  .np-grid{display:flex!important;flex-direction:column!important;width:100%!important;gap:1.1rem!important}
+  .np-column{width:100%!important;max-width:100%!important;box-sizing:border-box!important}
+  .np-card{width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding:.8rem 1rem!important}
+  .np-title{font-size:.9rem!important;white-space:normal!important;display:-webkit-box!important;-line-clamp:2!important;-webkit-box-orient:vertical!important;overflow:hidden!important}
+
+  .promo-banners-row{display:flex!important;flex-direction:column!important;width:100%!important;gap:.85rem!important;margin:0 0 2rem!important;box-sizing:border-box!important}
+  .promo-banner-card{width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding:1.1rem 1.25rem!important}
+
+  .explore-categories-section{width:100%!important;max-width:100%!important;margin:0 0 2rem!important;box-sizing:border-box!important}
+  .explore-cat-chips-wrap{width:100%!important;max-width:100%!important;gap:.5rem!important;box-sizing:border-box!important}
+  .cat-chip{font-size:.82rem!important;padding:.42rem .85rem!important}
+
+  .trending-searches-section{width:100%!important;max-width:100%!important;margin:0 0 2rem!important;box-sizing:border-box!important}
+  .ts-grid{display:flex!important;flex-direction:column!important;width:100%!important;gap:1.1rem!important}
+  .ts-column{width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding:1rem!important}
+  .ts-card{width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding:.75rem .85rem!important}
+  .ts-title{font-size:.88rem!important;white-space:normal!important;display:-webkit-box!important;-line-clamp:2!important;-webkit-box-orient:vertical!important;overflow:hidden!important}
+
+  .student-reviews-section{width:100%!important;max-width:100%!important;margin:0 0 2rem!important;box-sizing:border-box!important}
+  .sr-grid{display:flex!important;flex-direction:column!important;width:100%!important;gap:1.1rem!important}
+  .sr-card{width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding:1.3rem 1.15rem!important}
+
+  .courses-section-header{width:100%!important;max-width:100%!important;flex-direction:column!important;align-items:flex-start!important;gap:.6rem!important;margin:1.4rem 0 .7rem!important;box-sizing:border-box!important}
+  .courses-section-header .btn{width:100%!important;text-align:center!important;box-sizing:border-box!important}
+
+  .filters{display:flex!important;flex-direction:column!important;width:100%!important;max-width:100%!important;gap:.6rem!important;margin:.4rem 0 1.2rem!important;box-sizing:border-box!important}
+  .filters input[type=search], .filters #q, .filters select, .filters #cat, .filters #level{width:100%!important;min-width:0!important;flex:1 1 100%!important;box-sizing:border-box!important}
+
+  .grid{display:flex!important;flex-direction:column!important;width:100%!important;gap:1rem!important;box-sizing:border-box!important}
+  .course-card, .udemy-style-card{width:100%!important;max-width:100%!important;box-sizing:border-box!important}
+
+  .cat-strip, .cat-chips-list{display:flex!important;flex-wrap:wrap!important;gap:.5rem!important;width:100%!important;box-sizing:border-box!important}
+  .courses-page-header{width:100%!important;max-width:100%!important;margin-bottom:1.2rem!important;box-sizing:border-box!important}
+  .courses-page-title{font-size:1.6rem!important}
+  
+  .two-col{grid-template-columns:1fr!important;width:100%!important;box-sizing:border-box!important}
+  .site-footer{padding:1.4rem 1rem!important;width:100%!important;box-sizing:border-box!important}
+
+  .course-detail-top-grid{grid-template-columns:1fr!important;gap:1.2rem!important;width:100%!important}
+  .course-purchase-box{padding:1.2rem 1.1rem!important;width:100%!important;box-sizing:border-box!important}
+  .btn-buy-now{width:100%!important;text-align:center!important;box-sizing:border-box!important}
+  .checkout-wrapper{grid-template-columns:1fr!important;gap:1.2rem!important;width:100%!important}
+  .checkout-card{padding:1.2rem 1rem!important;width:100%!important;box-sizing:border-box!important}
+  .summary-card{position:static!important;padding:1.2rem 1rem!important;width:100%!important;box-sizing:border-box!important}
+  .invoice-card{padding:1.2rem 1rem!important;width:100%!important;box-sizing:border-box!important}
+  .invoice-header{flex-direction:column!important;gap:.8rem!important}
+  .invoice-badge-wrap{text-align:left!important}
+  .bar{flex-direction:column!important;align-items:flex-start!important;gap:.7rem!important;width:100%!important}
+  .bar select{width:100%!important;min-width:0!important}
 }
-/* ===== All Courses Page Header ===== */
+
+@media (max-width:480px){
+  main,.wrap{padding:calc(105px + 1rem) .75rem 2.5rem!important}
+  .site-header{padding:.5rem .75rem!important}
+  .hero{padding:1.2rem .85rem!important;border-radius:12px!important}
+  .hero-image-card{height:210px!important}
+  .np-column{border-radius:10px!important}
+  .np-card{padding:.7rem .75rem!important}
+  .ts-column{padding:.85rem .75rem!important}
+  .ts-card{padding:.65rem .7rem!important}
+  .sr-card{padding:1.1rem .95rem!important}
+}
+
 .courses-page-header{margin:0 0 1.5rem;animation:npFadeIn .5s ease both}
 .courses-page-badge{display:inline-flex;align-items:center;gap:.4rem;padding:.3rem .85rem;font-size:.82rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--teal-dark);background:rgba(14,107,99,0.1);border:1px solid rgba(14,107,99,0.22);border-radius:999px;margin-bottom:.6rem}
 .courses-page-title{font-size:clamp(1.8rem,4vw,2.4rem);font-weight:800;color:var(--ink);margin:0 0 .5rem;letter-spacing:-.02em}
 .courses-page-subtitle{max-width:65ch;color:var(--muted);font-size:1.05rem;line-height:1.6;margin:0 0 1rem}
 
-/* ===== New and Popular Section ===== */
 .new-popular-section{margin:0 0 2.5rem;animation:npFadeIn .6s ease both}
 .np-heading{font-size:1.5rem;font-weight:800;color:var(--ink);margin:0 0 1.2rem;letter-spacing:-.02em}
 .np-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem}
@@ -149,14 +308,12 @@ th{background:#eaf0f3}
 @media (max-width:900px){.np-grid{grid-template-columns:1fr}}
 @media (max-width:720px){.np-grid{grid-template-columns:1fr}}
 
-/* ===== Three Coursera-Style Promo Banners ===== */
 .promo-banners-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;margin:0 0 2.8rem}
 .promo-banner-card{display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,#f1f7fd 0%,#f6fafe 100%);border:1px solid #dce8f5;border-radius:16px;padding:1.4rem 1.8rem;text-decoration:none;color:#0f172a;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;box-shadow:0 2px 8px rgba(0,0,0,0.02)}
 .promo-banner-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(29,78,216,0.08);border-color:#b9d5f3}
 .promo-banner-text{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:1.18rem;font-weight:700;color:#0f172a;margin:0;line-height:1.35}
 .promo-banner-icon{flex-shrink:0;margin-left:1rem;display:flex;align-items:center;justify-content:center}
 
-/* ===== Explore Categories Chips Section ===== */
 .explore-categories-section{margin:0 0 2.8rem}
 .explore-cat-heading{font-size:1.4rem;font-weight:800;color:#0f172a;margin:0 0 1.2rem;letter-spacing:-.02em}
 .explore-cat-chips-wrap{display:flex;flex-wrap:wrap;gap:.75rem}
@@ -174,18 +331,15 @@ th{background:#eaf0f3}
   .promo-banners-row{grid-template-columns:1fr;gap:1rem}
 }
 
-/* ===== Pricing & Course Cards ===== */
 .course-price-wrap{display:flex;align-items:center;gap:.5rem;margin:.4rem 0 .2rem;flex-wrap:wrap}
 .course-price{font-size:1.15rem;font-weight:800;color:var(--teal)}
 .course-orig-price{font-size:.9rem;color:var(--muted);text-decoration:line-through}
 .course-discount-badge{display:inline-block;background:#e6f6f4;color:var(--teal);border:1px solid rgba(14,107,99,.25);padding:.1rem .45rem;border-radius:4px;font-size:.75rem;font-weight:700}
 
-/* New and Popular Price Row */
 .np-price-row{display:flex;align-items:center;gap:.4rem;margin-top:.15rem}
 .np-price{font-size:.92rem;font-weight:800;color:var(--teal)}
 .np-orig-price{font-size:.78rem;color:var(--muted);text-decoration:line-through}
 
-/* Course Detail Page */
 .course-header-badge-row{display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem;flex-wrap:wrap}
 .badge-paid{background:#fff8e6;color:#9c6f05;border:1px solid #f6db95;padding:.2rem .65rem;border-radius:99px;font-size:.75rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
 .badge-enrolled{background:#e8f7f0;color:#0e6b63;border:1px solid #a8e2cb;padding:.2rem .65rem;border-radius:99px;font-size:.75rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
@@ -212,7 +366,6 @@ th{background:#eaf0f3}
 .lock-meta{color:var(--muted);font-size:.92rem;margin-top:.5rem}
 .lesson-num{color:var(--teal);font-weight:800}
 
-/* ===== Checkout Page ===== */
 .checkout-wrapper{display:grid;grid-template-columns:1.5fr 1fr;gap:2rem;align-items:start;margin:1rem 0 3rem}
 .checkout-back-link{display:inline-block;font-size:.9rem;font-weight:600;color:var(--muted);text-decoration:none;margin-bottom:.8rem}
 .checkout-back-link:hover{color:var(--teal);text-decoration:underline}
@@ -225,7 +378,6 @@ th{background:#eaf0f3}
 .info-label{display:block;font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
 .info-value{display:block;font-size:.98rem;font-weight:700;color:var(--ink);margin-top:.2rem}
 
-/* Payment Method Tabs */
 .payment-tabs{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.8rem;margin-bottom:1.4rem}
 .pay-tab{display:flex;align-items:center;gap:.6rem;padding:.75rem;border:2px solid var(--line);border-radius:10px;cursor:pointer;background:#fff;transition:border-color .2s ease,box-shadow .2s ease}
 .pay-tab input{display:none}
@@ -239,7 +391,6 @@ th{background:#eaf0f3}
 .tab-content.active{display:block;animation:tabFade .3s ease both}
 @keyframes tabFade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 
-/* UPI Content */
 .upi-qr-section{display:flex;flex-wrap:wrap;align-items:center;gap:1.5rem;justify-content:center}
 .qr-code-box{text-align:center;padding:1rem;background:#fff;border:1px solid var(--line);border-radius:10px}
 .qr-caption{font-size:.75rem;font-weight:700;color:var(--muted);margin-top:.4rem}
@@ -251,12 +402,10 @@ th{background:#eaf0f3}
 .upi-supported-apps{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.8rem}
 .upi-pill{font-size:.72rem;background:#fff;border:1px solid var(--line);padding:.2rem .5rem;border-radius:99px;font-weight:600;color:var(--muted)}
 
-/* Card Form */
 .card-number-wrapper{position:relative}
 .card-brand-badge{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:.75rem;font-weight:800;background:var(--teal);color:#fff;padding:.15rem .45rem;border-radius:4px}
 .card-expiry-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 
-/* Netbanking & Wallets */
 .section-desc{font-size:.9rem;color:var(--muted);margin:0 0 .8rem}
 .bank-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem}
 .bank-pill,.wallet-pill{display:flex;align-items:center;gap:.4rem;padding:.6rem .8rem;border:1px solid var(--line);border-radius:8px;background:#fff;cursor:pointer;font-size:.88rem;font-weight:600}
@@ -268,7 +417,6 @@ th{background:#eaf0f3}
 .btn-checkout-submit:hover{box-shadow:0 8px 25px rgba(14,107,99,0.45)}
 .terms-note{font-size:.78rem;color:var(--muted);text-align:center;margin-top:.8rem}
 
-/* Checkout Sidebar / Summary */
 .summary-card{position:sticky;top:95px;padding:1.6rem;border-radius:12px}
 .summary-course-item{display:flex;gap:1rem;align-items:center;padding-bottom:1.2rem;border-bottom:1px solid var(--line);margin-bottom:1.2rem}
 .summary-course-icon{width:50px;height:50px;border-radius:10px;background:linear-gradient(135deg,var(--teal) 0%,var(--teal-dark) 100%);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:800;font-family:"Bricolage Grotesque",sans-serif;flex-shrink:0}
@@ -299,7 +447,6 @@ th{background:#eaf0f3}
 .guarantee-card strong{display:block;font-size:.85rem;color:var(--ink)}
 .guarantee-card p{font-size:.78rem;color:var(--muted);margin:.2rem 0 0;line-height:1.4}
 
-/* ===== Receipt & Tax Invoice Page ===== */
 .receipt-container{max-width:760px;margin:1rem auto 3rem}
 .receipt-success-banner{text-align:center;padding:2rem 1.5rem 2.2rem;background:#ffffff;border:1px solid var(--line);border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,0.05);margin-bottom:1.8rem}
 .success-icon-bubble{width:64px;height:64px;border-radius:50%;background:#e6f8f1;color:#0e6b63;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:800;margin:0 auto 1rem;border:3px solid #bcecd8}
@@ -336,12 +483,10 @@ th{background:#eaf0f3}
 .invoice-seal{display:flex;align-items:center;gap:.4rem;font-weight:700;color:var(--teal)}
 .invoice-help{margin:0}
 
-/* Dashboard Badges */
 .dashboard-header-bar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem}
 .pill-payment-method{background:#edf4f7;color:var(--ink);padding:.2rem .6rem;border-radius:99px;font-size:.8rem;font-weight:700}
 .badge-status-completed{background:#e8f7f0;color:#0e6b63;padding:.2rem .6rem;border-radius:99px;font-size:.8rem;font-weight:700}
 
-/* Print Invoice Clean Styling */
 @media print{
   body{background:#fff!important;color:#000!important}
   .site-header,.site-footer,.receipt-success-banner,.checkout-back-link,.btn-primary-cta,.btn-secondary-cta,.btn-outline-cta{display:none!important}
@@ -356,7 +501,6 @@ th{background:#eaf0f3}
   .bank-grid{grid-template-columns:repeat(2,1fr)}
 }
 
-/* ===== Udemy Style Course Cards ===== */
 .udemy-style-card{display:flex;flex-direction:column;padding:0!important;border:1px solid #e2e8f0!important;border-left:1px solid #e2e8f0!important;border-radius:12px!important;overflow:hidden;background:#fff;text-decoration:none;color:inherit;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
 .udemy-style-card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(20,33,43,.12)!important;border-color:#cbd5e1!important}
 
@@ -396,11 +540,9 @@ th{background:#eaf0f3}
 .udemy-btn-cart{display:inline-flex;align-items:center;justify-content:center;padding:.45rem .95rem;font-size:.84rem;font-weight:700;color:#5b21b6;background:#fff;border:1.5px solid #5b21b6;border-radius:8px;text-decoration:none;transition:all .2s ease;box-shadow:0 1px 4px rgba(91,33,182,.1)}
 .udemy-btn-cart:hover{background:#5b21b6;color:#fff;box-shadow:0 4px 12px rgba(91,33,182,.25)}
 
-/* New and Popular Image Thumbnail */
 .np-card-img-wrap{width:68px;height:68px;border-radius:10px;overflow:hidden;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.1)}
 .np-card-photo{width:100%;height:100%;object-fit:cover;display:block}
 
-/* Course Detail Page Header with Cover Photo */
 .course-detail-top-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:2rem;align-items:center;margin-bottom:1.5rem}
 .course-detail-cover-img{width:100%;max-height:260px;object-fit:cover;border-radius:14px;box-shadow:0 8px 24px rgba(20,33,43,0.12);border:1px solid var(--line)}
 
@@ -410,7 +552,6 @@ th{background:#eaf0f3}
   .course-detail-top-grid{grid-template-columns:1fr}
 }
 
-/* ===== Trending Searches Section ===== */
 .trending-searches-section{margin:0 0 3.2rem}
 .ts-heading{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:1.5rem;font-weight:800;color:#0b192c;margin:0 0 1.25rem;letter-spacing:-.02em}
 .ts-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.35rem}
@@ -445,17 +586,16 @@ th{background:#eaf0f3}
 .ts-star{color:#0b192c;font-weight:700;display:inline-flex;align-items:center;gap:2px}
 @media (max-width:950px){.ts-grid{grid-template-columns:1fr;gap:1.2rem}}
 
-/* ===== Student Reviews Section ===== */
 .student-reviews-section{margin:0 0 3.2rem;animation:npFadeIn .6s ease both}
 .sr-header{margin-bottom:1.4rem}
 .sr-badge{display:inline-flex;align-items:center;gap:.4rem;padding:.28rem .75rem;font-size:.8rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--teal-dark);background:rgba(14,107,99,0.1);border:1px solid rgba(14,107,99,0.22);border-radius:999px;margin-bottom:.55rem}
 .sr-subheading{color:var(--muted);font-size:1.02rem;margin:0;max-width:68ch}
 .sr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.35rem}
-.sr-card{background:linear-gradient(135deg,#ffffff 0%,#fbfdfd 60%,#fefcf9 100%);border:1px solid rgba(14,107,99,0.16);border-radius:18px;padding:1.6rem 1.6rem 1.4rem;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 4px 18px rgba(20,33,43,0.04);transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease;position:relative}
-.sr-card:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(14,107,99,.12);border-color:rgba(14,107,99,0.32)}
-.sr-quote-icon{font-family:Georgia,serif;font-size:2.8rem;line-height:.8;color:var(--teal);opacity:.35;user-select:none;margin-bottom:.2rem}
+.sr-card{background:linear-gradient(135deg,#d7e8e4 0%,#e0eee9 55%,#ebe6d8 100%);border:1px solid rgba(14,107,99,0.26);border-radius:18px;padding:1.6rem 1.6rem 1.4rem;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 6px 20px rgba(20,33,43,0.08);transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease,background .25s ease;position:relative}
+.sr-card:hover{background:linear-gradient(135deg,#cbe0da 0%,#d5e6e1 55%,#e4decd 100%);transform:translateY(-4px);box-shadow:0 12px 30px rgba(14,107,99,.16);border-color:rgba(14,107,99,0.4)}
+.sr-quote-icon{font-family:Georgia,serif;font-size:2.8rem;line-height:.8;color:var(--teal);opacity:.4;user-select:none;margin-bottom:.2rem}
 .sr-quote-text{font-family:Georgia,'Source Sans 3',serif;font-size:1.08rem;line-height:1.6;color:#1e293b;font-weight:400;margin:0 0 1.2rem;font-style:normal;letter-spacing:-.01em;flex:1}
-.sr-footer{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-top:1.1rem;border-top:1px solid #eef3f5;margin-top:auto}
+.sr-footer{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-top:1.1rem;border-top:1px solid rgba(14,107,99,0.14);margin-top:auto}
 .sr-student-meta{display:flex;flex-direction:column;min-width:0}
 .sr-student-name{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:.9rem;font-weight:800;color:#0b192c;letter-spacing:.05em;text-transform:uppercase}
 .sr-student-location{font-size:.74rem;font-weight:600;font-style:italic;color:#64748b;letter-spacing:.04em;text-transform:uppercase;margin-top:1px}
@@ -471,7 +611,6 @@ th{background:#eaf0f3}
   .sr-grid{grid-template-columns:1fr;gap:1.2rem}
 }
 
-/* ===== Course Tabs & Interaction ===== */
 .course-nav-tabs{display:flex;gap:.5rem;border-bottom:2px solid var(--line);margin:1.8rem 0 1.2rem;overflow-x:auto}
 .course-tab-btn{background:none;border:none;padding:.75rem 1.2rem;font-family:inherit;font-size:.95rem;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s ease;white-space:nowrap}
 .course-tab-btn:hover{color:var(--teal)}

@@ -6,7 +6,6 @@ $db = db();
 $isSuperAdmin = ($me['role'] === 'admin');
 $instrId = (int)$me['id'];
 
-// Get instructor courses
 if ($isSuperAdmin) {
     $myCourses = $db->query('SELECT id, title FROM courses ORDER BY id DESC')->fetchAll();
 } else {
@@ -18,7 +17,6 @@ if ($isSuperAdmin) {
 $cIdsList = !empty($myCourses) ? implode(',', array_map('intval', array_column($myCourses, 'id'))) : '0';
 $cid = (int)($_GET['cid'] ?? 0);
 
-// Fetch enrolled students
 $query = "SELECT u.id AS user_id, u.name AS student_name, u.email AS student_email, u.avatar,
                  e.enrolled_at, c.id AS course_id, c.title AS course_title
           FROM enrollments e

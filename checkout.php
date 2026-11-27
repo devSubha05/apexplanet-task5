@@ -16,7 +16,6 @@ if (!$me) {
     redirect('login.php?redirect=' . urlencode('checkout.php?course_id=' . $courseId));
 }
 
-// Check if already enrolled
 $s = db()->prepare('SELECT 1 FROM enrollments WHERE user_id=? AND course_id=?');
 $s->execute([$me['id'], $courseId]);
 if ($s->fetchColumn()) {
@@ -34,7 +33,6 @@ require __DIR__ . '/includes/header.php';
 ?>
 
 <div class="checkout-wrapper">
-  <!-- Left Side: Payment Form & Details -->
   <div class="checkout-main">
     <div class="checkout-header">
       <a href="course.php?id=<?= $courseId ?>" class="checkout-back-link">← Back to Course</a>
@@ -42,7 +40,6 @@ require __DIR__ . '/includes/header.php';
       <p class="checkout-subtitle">Complete your payment to get instant lifetime access to this course.</p>
     </div>
 
-    <!-- Student Info Card -->
     <div class="card checkout-card">
       <h2 class="card-heading">1. Student Details</h2>
       <div class="student-info-grid">
@@ -61,7 +58,6 @@ require __DIR__ . '/includes/header.php';
       </div>
     </div>
 
-    <!-- Payment Options Form -->
     <form id="paymentForm" action="process_payment.php" method="post" class="card checkout-card">
       <?= csrf_field() ?>
       <input type="hidden" name="course_id" value="<?= $courseId ?>">
@@ -70,7 +66,6 @@ require __DIR__ . '/includes/header.php';
 
       <h2 class="card-heading">2. Select Payment Method</h2>
 
-      <!-- Payment Method Tabs -->
       <div class="payment-tabs" role="tablist">
         <label class="pay-tab active" data-target="tab-upi">
           <input type="radio" name="payment_method" value="UPI" checked>
@@ -109,26 +104,21 @@ require __DIR__ . '/includes/header.php';
         </label>
       </div>
 
-      <!-- Tab Content: UPI -->
       <div id="tab-upi" class="tab-content active">
         <div class="upi-box">
           <div class="upi-qr-section">
             <div class="qr-code-box">
               <svg viewBox="0 0 160 160" width="140" height="140" style="background:#fff; padding:6px; border-radius:8px;">
                 <rect width="160" height="160" fill="#ffffff"/>
-                <!-- Corner 1 -->
                 <rect x="10" y="10" width="40" height="40" fill="#0e6b63" rx="4"/>
                 <rect x="18" y="18" width="24" height="24" fill="#ffffff" rx="2"/>
                 <rect x="24" y="24" width="12" height="12" fill="#0e6b63" rx="1"/>
-                <!-- Corner 2 -->
                 <rect x="110" y="10" width="40" height="40" fill="#0e6b63" rx="4"/>
                 <rect x="118" y="18" width="24" height="24" fill="#ffffff" rx="2"/>
                 <rect x="124" y="24" width="12" height="12" fill="#0e6b63" rx="1"/>
-                <!-- Corner 3 -->
                 <rect x="10" y="110" width="40" height="40" fill="#0e6b63" rx="4"/>
                 <rect x="18" y="118" width="24" height="24" fill="#ffffff" rx="2"/>
                 <rect x="24" y="124" width="12" height="12" fill="#0e6b63" rx="1"/>
-                <!-- QR Dots Pattern -->
                 <rect x="60" y="15" width="8" height="8" fill="#14212b"/>
                 <rect x="75" y="15" width="15" height="8" fill="#14212b"/>
                 <rect x="60" y="30" width="12" height="12" fill="#0e6b63"/>
@@ -166,7 +156,6 @@ require __DIR__ . '/includes/header.php';
         </div>
       </div>
 
-      <!-- Tab Content: Card -->
       <div id="tab-card" class="tab-content">
         <div class="card-form-grid">
           <label>Cardholder Name
@@ -189,7 +178,6 @@ require __DIR__ . '/includes/header.php';
         </div>
       </div>
 
-      <!-- Tab Content: Net Banking -->
       <div id="tab-netbanking" class="tab-content">
         <p class="section-desc">Select your preferred bank to pay via Net Banking:</p>
         <div class="bank-grid">
@@ -231,7 +219,6 @@ require __DIR__ . '/includes/header.php';
         </label>
       </div>
 
-      <!-- Tab Content: Wallet -->
       <div id="tab-wallet" class="tab-content">
         <p class="section-desc">Choose your wallet provider:</p>
         <div class="wallet-options">
@@ -254,14 +241,12 @@ require __DIR__ . '/includes/header.php';
         </div>
       </div>
 
-      <!-- Trust Badges & Guarantee -->
       <div class="security-badges">
         <span>🔒 256-Bit SSL Encrypted</span>
         <span>🛡️ 100% Secure Checkout</span>
         <span>⚡ Instant Course Access</span>
       </div>
 
-      <!-- Submit Button -->
       <button type="submit" id="paySubmitBtn" class="btn btn-checkout-submit">
         <span id="btnPayText">Pay ₹<?= number_format($price) ?> &amp; Complete Enrollment</span>
         <span id="btnPaySpinner" class="spinner" style="display:none;">⏳ Processing...</span>
@@ -271,7 +256,6 @@ require __DIR__ . '/includes/header.php';
     </form>
   </div>
 
-  <!-- Right Side: Order Summary -->
   <aside class="checkout-sidebar">
     <div class="card summary-card">
       <h2 class="card-heading">Order Summary</h2>
@@ -285,7 +269,6 @@ require __DIR__ . '/includes/header.php';
         </div>
       </div>
 
-      <!-- Coupon Code Section -->
       <div class="coupon-box">
         <label for="couponInput">Have a Coupon?</label>
         <div class="coupon-input-row">
@@ -295,7 +278,6 @@ require __DIR__ . '/includes/header.php';
         <div id="couponMsg" class="coupon-msg" style="display:none;"></div>
       </div>
 
-      <!-- Price Breakdown -->
       <div class="price-breakdown">
         <div class="price-row">
           <span>Original Price</span>
@@ -324,7 +306,6 @@ require __DIR__ . '/includes/header.php';
         </div>
       </div>
 
-      <!-- Guarantee Box -->
       <div class="guarantee-card">
         <div class="guarantee-icon">🛡️</div>
         <div>
@@ -338,7 +319,7 @@ require __DIR__ . '/includes/header.php';
 
 <script>
 (function() {
-  // Tab Switching
+
   const tabs = document.querySelectorAll('.pay-tab');
   const tabContents = document.querySelectorAll('.tab-content');
   tabs.forEach(tab => {
@@ -354,7 +335,6 @@ require __DIR__ . '/includes/header.php';
     });
   });
 
-  // Card Number Formatting
   const cardInput = document.getElementById('cardNumberInput');
   const cardBrand = document.getElementById('cardBrand');
   if (cardInput) {
@@ -369,7 +349,6 @@ require __DIR__ . '/includes/header.php';
     });
   }
 
-  // UPI verification simulate
   const verifyUpiBtn = document.getElementById('verifyUpiBtn');
   const upiBadge = document.getElementById('upiBadge');
   if (verifyUpiBtn && upiBadge) {
@@ -382,7 +361,6 @@ require __DIR__ . '/includes/header.php';
     });
   }
 
-  // Coupon handling
   const couponInput = document.getElementById('couponInput');
   const applyCouponBtn = document.getElementById('applyCouponBtn');
   const couponMsg = document.getElementById('couponMsg');
@@ -432,7 +410,6 @@ require __DIR__ . '/includes/header.php';
     });
   }
 
-  // Payment Submit Animation
   const form = document.getElementById('paymentForm');
   const submitBtn = document.getElementById('paySubmitBtn');
   const btnSpinner = document.getElementById('btnPaySpinner');
