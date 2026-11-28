@@ -94,7 +94,7 @@
       const courseUrl = 'course.php?id=' + encodeURIComponent(c.id);
       const checkoutUrl = 'checkout.php?course_id=' + encodeURIComponent(c.id);
       const imgPath = c.image || ('assets/img/courses/course-' + c.id + '.jpg');
-r
+
       const thumb = el('div', 'udemy-thumb-wrap');
       const img = document.createElement('img');
       img.src = imgPath;
